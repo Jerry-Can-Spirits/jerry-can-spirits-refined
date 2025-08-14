@@ -1,0 +1,118 @@
+---
+// src/components/ShopCta.astro
+---
+<section class="shop-cta">
+  <div class="container">
+    <h2 class="section-title">The Standard Issue Kit</h2>
+    <div class="product-grid">
+      <a href="#" class="grid-item">
+        <img src="/product-rum.jpg" alt="Jerry Can Spirits Rum">
+        <div class="item-label">The Rum</div>
+      </a>
+
+      <div class="grid-item placeholder-item">
+        <img src="/product-coasters.jpg" alt="Coming Soon">
+        <div class="item-label">More Hardware Coming Soon</div>
+      </div>
+
+      <div class="grid-item placeholder-item">
+        <img src="/product-merch.jpg" alt="Coming Soon">
+        <div class="item-label">The Uniform Coming Soon</div>
+      </div>
+    </div>
+    <a href="#" class="cta-button">Join The Expedition</a>
+  </div>
+</section>
+
+<style>
+  .shop-cta {
+    background-color: var(--charcoal);
+    padding: 6rem 2rem;
+    text-align: center;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .section-title {
+    font-size: 3rem;
+    text-transform: uppercase;
+    color: var(--cream);
+    margin-bottom: 3rem;
+  }
+  .product-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    margin-bottom: 4rem;
+  }
+  .grid-item {
+    background-color: var(--slate);
+    border-radius: 8px;
+    overflow: hidden;
+    text-decoration: none;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 2px solid transparent;
+  }
+  .grid-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    border-color: var(--brass);
+  }
+  .grid-item img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 1 / 1;
+    object-fit: cover;
+    display: block;
+  }
+  .item-label {
+    color: var(--cream);
+    padding: 1.5rem;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  /* --- NEW STYLE FOR PLACEHOLDERS --- */
+  .placeholder-item {
+    opacity: 0.6; /* Fades the item out */
+    position: relative;
+    border: 2px dashed var(--slate);
+  }
+  .placeholder-item img {
+    filter: grayscale(100%); /* Makes the image black and white */
+  }
+  .placeholder-item:hover {
+    transform: none; /* Disables the hover effects */
+    box-shadow: none;
+    border-color: dashed var(--slate);
+    cursor: not-allowed;
+  }
+  /* --- END NEW STYLES --- */
+
+  .cta-button {
+    display: inline-block;
+    background-color: var(--brass);
+    color: var(--charcoal);
+    padding: 1rem 3rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.5rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+  }
+  .cta-button:hover {
+    background-color: #B8922A; /* Darker Brass */
+    transform: translateY(-2px);
+  }
+  @media (max-width: 900px) {
+    .product-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+</style>

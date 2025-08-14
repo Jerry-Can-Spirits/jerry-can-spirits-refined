@@ -1,0 +1,76 @@
+---
+// src/components/Features.astro
+---
+<section class="features">
+  <div class="container">
+    <div class="features-grid">
+      <article class="feature-card">
+        <h3 class="feature-title">Engineered for Excellence</h3>
+        <p>
+          Every batch is crafted with military precision. No shortcuts, no compromises. Just the relentless pursuit of perfection in every drop, engineered for those who demand the absolute best.
+        </p>
+      </article>
+      <article class="feature-card">
+        <h3 class="feature-title">Essential Provision</h3>
+        <p>
+          Built for functionality over flash. This isn't a decoration for your shelf—it's a tool for adventurers, makers, and those who value substance over style. Purpose-built for real experiences.
+        </p>
+      </article>
+      <article class="feature-card">
+        <h3 class="feature-title">Inspired by Resilience</h3>
+        <p>
+          Born from the legacy of the jerry can—a symbol of resourcefulness and durability. We carry that same spirit of resilience into every bottle, honoring those who came before.
+        </p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<style>
+  .features {
+    background-color: var(--parchment);
+    padding: 6rem 2rem;
+  }
+  .container {
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+    align-items: start;
+  }
+  .feature-card {
+    border: 2px solid rgba(42, 47, 29, 0.2);
+    padding: 2rem;
+    border-radius: 8px;
+    background-color: #fff;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
+  .feature-title {
+    font-size: 1.5rem;
+    color: var(--deep-green);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 2px solid var(--olive-drab);
+    padding-bottom: 0.5rem;
+    display: inline-block;
+    min-height: 70px;
+  }
+  .feature-card p {
+    font-size: 1rem;
+    line-height: 1.7;
+    color: var(--dark-olive);
+  }
+  @media (max-width: 900px) {
+    .features-grid {
+      grid-template-columns: 1fr;
+    }
+    .feature-title {
+        min-height: auto;
+    }
+  }
+</style>

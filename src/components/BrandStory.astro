@@ -1,0 +1,79 @@
+---
+// src/components/BrandStory.astro
+---
+<section class="brand-story">
+  <div class="story-container">
+    <div class="image-column">
+      <img src="/brand-story-image.jpg" alt="A sophisticated spirits setting" loading="lazy" />
+    </div>
+    <div class="text-column">
+      <h2 class="title">Born From Adventure. <br/> Built For The Journey.</h2>
+      <p>
+        Jerry Can Spirits wasn't conceived in a boardroom. It was born from windswept coastlines, navigated through rugged highlands, and shared around campfires. It's a tribute to the legacy of the jerry can itself—a symbol of unwavering reliability and resourcefulness.
+      </p>
+      <p>
+        We craft spirits with that same purpose. No shortcuts, no compromises. Just functional, exceptional spirits engineered in the UK for those who value substance over style. This is your standard issue.
+      </p>
+    </div>
+  </div>
+</section>
+
+<style>
+  /* --- CHANGED --- */
+  .brand-story {
+    background-color: var(--charcoal); /* Changed from cream */
+    color: var(--cream);             /* Changed from charcoal */
+    padding: 6rem 2rem;
+  }
+
+  .story-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    gap: 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .image-column img {
+    width: 100%;
+    height: auto;
+    max-width: 500px;
+    display: block;
+    margin: 0 auto;
+    border-radius: 8px;
+  }
+
+  /* --- CHANGED --- */
+  .title {
+    font-size: 3rem;
+    text-transform: uppercase;
+    line-height: 1.2;
+    margin-bottom: 2rem;
+    color: var(--cream); /* Explicitly set title to light */
+  }
+
+  /* --- CHANGED --- */
+  .text-column p {
+    font-family: 'Roboto', sans-serif;
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--cream); /* Changed from slate */
+    margin-bottom: 1.5rem;
+    opacity: 0.9; /* Slight opacity makes body text softer than headlines */
+  }
+
+  /* Responsive styles for smaller screens */
+  @media (max-width: 900px) {
+    .story-container {
+      grid-template-columns: 1fr; /* Stack the columns */
+    }
+    .title {
+      font-size: 2.5rem;
+      text-align: center;
+    }
+    .text-column {
+      text-align: center;
+    }
+  }
+</style>

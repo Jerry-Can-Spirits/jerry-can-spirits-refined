@@ -1,0 +1,104 @@
+---
+// src/components/Header.astro
+---
+<header class="site-header">
+  <div class="header-container">
+    <a href="/" class="logo" aria-label="Jerry Can Spirits Homepage">
+      <img src="/logo-primary.png" alt="Jerry Can Spirits Logo" />
+    </a>
+    <nav class="main-nav">
+      <a href="/feature">Our Features</a>
+      <a href="/products">Products</a>
+      <a href="#footer">Contact</a>
+    </nav>
+  </div>
+</header>
+
+<style>
+  /* Solid background is now the default */
+  .site-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    padding: 1rem 2rem;
+    z-index: 100;
+    background-color: rgba(245, 241, 230, 0.85); /* Parchment */
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(42, 47, 29, 0.1); /* Deep green border */
+    transition: background-color 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
+  }
+
+  /* Transparent style ONLY applies on the homepage at the top */
+  body.homepage .site-header {
+    background-color: transparent;
+    backdrop-filter: blur(0px);
+    -webkit-backdrop-filter: blur(0px);
+    border-bottom-color: transparent;
+  }
+
+  body.homepage .site-header.scrolled {
+    background-color: rgba(245, 241, 230, 0.85);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid rgba(42, 47, 29, 0.1);
+  }
+
+  .main-nav a {
+    color: var(--deep-green);
+    text-decoration: none;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+  }
+
+  .main-nav a:hover {
+    color: var(--olive-drab);
+  }
+  
+  /* Text is light ONLY on the homepage at the top */
+  body.homepage .site-header .main-nav a {
+    color: var(--parchment);
+  }
+
+  body.homepage .site-header.scrolled .main-nav a {
+    color: var(--deep-green);
+  }
+
+  .header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1400px;
+    margin: 0 auto;
+  }
+
+  .logo img {
+    height: 60px;
+    width: auto;
+    transition: opacity 0.3s ease;
+  }
+  .logo:hover img {
+    opacity: 0.8;
+  }
+
+  .main-nav {
+    display: flex;
+    gap: 2rem;
+  }
+</style>
+
+<script>
+  const header = document.querySelector('.site-header');
+  if (header) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+  }
+</script>

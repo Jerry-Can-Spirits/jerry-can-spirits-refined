@@ -1,0 +1,31 @@
+---
+// src/layouts/MainLayout.astro
+import '../styles/global.css';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+---
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <title>Jerry Can Spirits</title>
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+  </head>
+  <body class:list={{ homepage: Astro.url.pathname === '/' }}></body>
+    <Header />
+    <slot />
+    <Footer />
+
+    <script 
+      type="text/javascript" 
+      async 
+      src="https://static.klaviyo.com/onsite/js/klaviyo.js?company_id=T8pKVn">
+    </script>
+
+  </body>
+</html>

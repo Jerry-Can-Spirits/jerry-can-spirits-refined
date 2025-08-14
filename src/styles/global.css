@@ -1,0 +1,31 @@
+/* src/styles/global.css */
+
+:root {
+  /* Core Colors */
+  --deep-green: #2A2F1D;
+  --olive-drab: #6B705C;
+  --parchment: #F5F1E6;
+  --dark-olive: #3D4034;
+
+  /* Utility Colors */
+  --error: #D0342C;
+  --success: #228B22;
+
+  /* Layout Variables */
+  --max-width: 1200px;
+  --page-padding: 2rem;
+}
+
+/* Base styles */
+body {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  background-color: var(--parchment); /* New light background */
+  color: var(--deep-green);          /* New default text color */
+}
+
+h1, h2, h3 {
+  font-family: 'Oswald', sans-serif;
+  margin: 0;
+  color: var(--deep-green); /* New heading color */
+}

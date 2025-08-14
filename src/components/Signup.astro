@@ -1,0 +1,112 @@
+---
+// src/components/Signup.astro
+---
+<section id="signup" class="signup-section">
+  <div class="container">
+    <h2 class="section-title">Become an Insider</h2>
+    <p class="sub-title">
+      Be the first to know. Join the Jerry Can Spirits mailing list for exclusive launch details, stories from the road, and an introductory offer reserved for our earliest supporters.
+    </p>
+
+    <div class="klaviyo-form-QZ76XT"></div>
+
+  </div>
+</section>
+
+<style>
+  .signup-section {
+    background-color: var(--cream);
+    padding: 5rem var(--page-padding);
+    text-align: center;
+  }
+
+  .container {
+    max-width: 650px; /* A narrower container for a focused form */
+    margin: 0 auto;
+  }
+
+  .section-title {
+    font-size: 2.5rem;
+    color: var(--charcoal);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+
+  .sub-title {
+    font-size: 1.1rem;
+    color: var(--slate);
+    line-height: 1.7;
+    margin-bottom: 1.5rem;
+  }
+
+  .signup-form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .form-group {
+    text-align: left;
+  }
+  
+  /* Hides the default label but keeps it accessible for screen readers */
+  .form-group label[for="email-input"] {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+  }
+
+  .form-group input[type="email"] {
+    width: 100%;
+    padding: 14px;
+    font-size: 1rem;
+    border-radius: 4px;
+    border: 2px solid var(--slate);
+    background-color: #fff;
+    box-sizing: border-box; /* Important for consistent sizing */
+  }
+
+  .form-group input[type="email"]:focus {
+    outline: none;
+    border-color: var(--brass);
+    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.4);
+  }
+  
+  .form-group.consent {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    font-size: 0.9rem;
+    color: var(--slate);
+  }
+
+  .form-group input[type="checkbox"] {
+    margin-top: 4px; /* Align checkbox with the first line of text */
+    flex-shrink: 0; /* Prevent the checkbox from shrinking */
+  }
+
+  .submit-button {
+    background-color: var(--charcoal);
+    color: var(--cream);
+    padding: 14px 24px;
+    border: none;
+    border-radius: 4px;
+    font-family: 'Oswald', sans-serif;
+    font-size: 1.2rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+  }
+
+  .submit-button:hover {
+    background-color: var(--slate);
+  }
+</style>
