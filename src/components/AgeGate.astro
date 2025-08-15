@@ -1,0 +1,170 @@
+---
+// src/components/AgeGate.astro
+---
+<div id="age-gate-overlay">
+  <div id="age-gate-modal">
+    <div class="logo-container">
+      <img src="/logo-primary.png" alt="Jerry Can Spirits Logo" width="150" />
+    </div>
+    <h2>Age Verification</h2>
+    <p>You must be of legal drinking age to enter this site. Please enter your date of birth.</p>
+    <form id="age-gate-form">
+      <div class="dob-inputs">
+        <div class="input-group">
+          <label for="dob-day">Day</label>
+          <input type="number" id="dob-day" placeholder="DD" min="1" max="31" required>
+        </div>
+        <div class="input-group">
+          <label for="dob-month">Month</label>
+          <input type="number" id="dob-month" placeholder="MM" min="1" max="12" required>
+        </div>
+        <div class="input-group">
+          <label for="dob-year">Year</label>
+          <input type="number" id="dob-year" placeholder="YYYY" min="1920" max="2024" required>
+        </div>
+      </div>
+      <button type="submit" class="submit-button">Enter Site</button>
+    </form>
+    <p id="age-gate-error" class="error-message"></p>
+    <p class="responsible-drinking">Please drink responsibly. For more information, visit <a href="https://www.drinkaware.co.uk" target="_blank" rel="noopener noreferrer">drinkaware.co.uk</a>.</p>
+  </div>
+</div>
+
+<style>
+  /* STYLES ARE UNCHANGED */
+  #age-gate-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(25, 30, 25, 0.95);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 9999;
+    backdrop-filter: blur(5px);
+  }
+  #age-gate-modal {
+    background-color: var(--parchment);
+    color: var(--dark-olive);
+    padding: 2.5rem;
+    border-radius: 8px;
+    text-align: center;
+    max-width: 450px;
+    width: 90%;
+  }
+  .logo-container { margin-bottom: 1rem; }
+  #age-gate-modal h2 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2rem;
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
+  }
+  #age-gate-modal p {
+    font-family: 'Roboto', sans-serif;
+    line-height: 1.6;
+    margin-bottom: 1.5rem;
+  }
+  .dob-inputs {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+  .input-group {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .input-group label { font-size: 0.8rem; margin-bottom: 0.25rem; }
+  .input-group input {
+    width: 80px; padding: 10px; border: 1px solid var(--dark-olive);
+    border-radius: 4px; font-size: 1rem; text-align: center;
+  }
+  .input-group input#dob-year { width: 100px; }
+  .submit-button {
+    background-color: var(--deep-green); color: var(--parchment);
+    width: 100%; padding: 14px; border: none; border-radius: 4px;
+    font-family: 'Oswald', sans-serif; font-size: 1.2rem;
+    text-transform: uppercase; cursor: pointer; transition: background-color 0.2s ease;
+  }
+  .submit-button:hover { background-color: var(--dark-olive); }
+  .error-message { color: #a00; font-weight: bold; margin-top: 1rem; height: 1em; }
+  .responsible-drinking { font-size: 0.8rem; margin-top: 2rem; margin-bottom: 0; }
+  .responsible-drinking a { color: var(--dark-olive); }
+</style>
+
+<script>
+  function setCookie(name: string, value: string, days: number) {
+    let expires = "";
+    if (days) {
+      const date = new Date();
+      date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
+      expires = "; expires=" + date.toUTCString();
+    }
+    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+  }
+
+  function getCookie(name: string) {
+    const nameEQ = name + "=";
+    const ca = document.cookie.split(';');
+    for (let i = 0; i < ca.length; i++) {
+      let c = ca[i];
+      while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+      if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+    }
+    return null;
+  }
+
+  // Main logic
+  document.addEventListener('DOMContentLoaded', () => {
+    const ageGateOverlay = document.getElementById('age-gate-overlay');
+    const ageGateForm = document.getElementById('age-gate-form');
+    const errorMessage = document.getElementById('age-gate-error');
+    const dayInput = document.getElementById('dob-day') as HTMLInputElement;
+    const monthInput = document.getElementById('dob-month') as HTMLInputElement;
+    const yearInput = document.getElementById('dob-year') as HTMLInputElement;
+
+    if (!ageGateOverlay || !ageGateForm || !errorMessage || !dayInput || !monthInput || !yearInput) {
+      console.error('Age Gate component is missing required HTML elements. Aborting script.');
+      return; 
+    }
+
+    yearInput.max = new Date().getFullYear().toString();
+
+    if (getCookie('ageGateVerified') === 'true') {
+      ageGateOverlay.style.display = 'none';
+      return;
+    }
+
+    ageGateForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+
+      const day = parseInt(dayInput.value, 10);
+      const month = parseInt(monthInput.value, 10);
+      const year = parseInt(yearInput.value, 10);
+      
+      if (!day || !month || !year) {
+          errorMessage.textContent = 'Please enter a valid date.';
+          return;
+      }
+      
+      const birthDate = new Date(year, month - 1, day);
+      const today = new Date();
+      
+      let age = today.getFullYear() - birthDate.getFullYear();
+      const m = today.getMonth() - birthDate.getMonth();
+      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
+          age--;
+      }
+
+      if (age >= 18) {
+        setCookie('ageGateVerified', 'true', 30);
+        ageGateOverlay.style.display = 'none';
+      } else {
+        errorMessage.textContent = 'Sorry, you must be 18 or over to enter this site.';
+      }
+    });
+  });
+</script>
