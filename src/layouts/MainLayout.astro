@@ -20,7 +20,7 @@ import Signup from '../components/Signup.astro';
   </head>
   <body class:list={{ homepage: Astro.url.pathname === '/' }}>
     <AgeGate />
-    <Header />
+    <Header homepage={Astro.url.pathname === '/'} />
 
     
     <main>
