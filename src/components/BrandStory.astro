@@ -1,78 +1,331 @@
 ---
 // src/components/BrandStory.astro
 ---
-<section class="brand-story">
+
+<section class="brand-story" id="brand-story">
   <div class="story-container">
     <div class="image-column">
-      <img src="/brand-story-image.jpg" alt="A sophisticated spirits setting" loading="lazy" />
+      <picture>
+        <source 
+          media="(max-width: 768px)" 
+          srcset="/brand-story-image-mobile.jpg"
+        >
+        <source 
+          media="(min-width: 769px)" 
+          srcset="/brand-story-image.jpg"
+        >
+        <img 
+          src="/brand-story-image.jpg" 
+          alt="Jerry Can Spirits being enjoyed on an outdoor adventure" 
+          loading="lazy"
+          width="500"
+          height="600"
+          class="story-image"
+        />
+      </picture>
+      <div class="image-accent"></div>
     </div>
+    
     <div class="text-column">
-      <h2 class="title">Born From Adventure. <br/> Built For The Journey.</h2>
-      <p>
-        Jerry Can Spirits wasn't conceived in a boardroom. It was born from windswept coastlines, navigated through rugged highlands, and shared around campfires. It's a tribute to the legacy of the jerry can itself—a symbol of unwavering reliability and resourcefulness.
-      </p>
-      <p>
-        We craft spirits with that same purpose. No shortcuts, no compromises. Just functional, exceptional spirits engineered in the UK for those who value substance over style. This is your standard issue.
-      </p>
+      <div class="content-wrapper">
+        <span class="section-label">Our Story</span>
+        <h2 class="title">
+          <span class="title-line">Born From Adventure.</span>
+          <span class="title-line">Built For The Journey.</span>
+        </h2>
+        
+        <div class="story-text">
+          <p>
+            Jerry Can Spirits wasn't conceived in a boardroom. It was born from windswept coastlines, navigated through rugged highlands, and shared around campfires. It's a tribute to the legacy of the jerry can itself—a symbol of unwavering reliability and resourcefulness.
+          </p>
+          <p>
+            We craft spirits with that same purpose. No shortcuts, no compromises. Just functional, exceptional spirits engineered in the UK for those who value substance over style. This is your standard issue.
+          </p>
+        </div>
+        
+        <a href="/ethos" class="story-cta">
+          <span>Discover Our Ethos</span>
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M5 12h14M12 5l7 7-7 7"/>
+          </svg>
+        </a>
+      </div>
     </div>
   </div>
 </section>
 
 <style>
   .brand-story {
-    background-color: var(--charcoal);
-    color: var(--cream);
-    padding: 6rem 2rem;
+    background-color: var(--theme-bg-secondary, var(--charcoal-olive));
+    color: var(--theme-text-primary);
+    padding: var(--space-4xl) var(--page-padding);
+    position: relative;
+    overflow: hidden;
   }
-
+  
+  /* Dark theme override for this section */
+  [data-theme="light"] .brand-story {
+    background-color: var(--color-green-800);
+    color: var(--color-parchment);
+  }
+  
   .story-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     align-items: center;
-    gap: 4rem;
-    max-width: 1200px;
+    gap: clamp(2rem, 5vw, 4rem);
+    max-width: var(--max-width);
     margin: 0 auto;
   }
-
-  .image-column img {
+  
+  /* Image column */
+  .image-column {
+    position: relative;
+    animation: fadeInLeft 0.8s ease-out;
+  }
+  
+  @keyframes fadeInLeft {
+    from {
+      opacity: 0;
+      transform: translateX(-30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .story-image {
     width: 100%;
     height: auto;
     max-width: 500px;
     display: block;
     margin: 0 auto;
-    border-radius: 8px;
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-xl);
+    object-fit: cover;
+    aspect-ratio: 5/6;
   }
-
-  /* --- CHANGED --- */
-  .title {
-    font-size: 3rem;
+  
+  /* Decorative accent behind image */
+  .image-accent {
+    position: absolute;
+    top: -20px;
+    left: -20px;
+    right: 20px;
+    bottom: 20px;
+    background: var(--color-green-500);
+    border-radius: var(--radius-md);
+    z-index: -1;
+    opacity: 0.2;
+  }
+  
+  /* Text column */
+  .text-column {
+    animation: fadeInRight 0.8s ease-out 0.2s backwards;
+  }
+  
+  @keyframes fadeInRight {
+    from {
+      opacity: 0;
+      transform: translateX(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateX(0);
+    }
+  }
+  
+  .content-wrapper {
+    max-width: 540px;
+  }
+  
+  /* Section label */
+  .section-label {
+    display: inline-block;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-sm);
     text-transform: uppercase;
-    line-height: 1.2;
-    margin-bottom: 2rem;
-    color: var(--cream); /* Explicitly set title to light */
+    letter-spacing: 0.15em;
+    color: var(--color-green-400);
+    margin-bottom: var(--space-md);
+    opacity: 0.8;
   }
-
-  /* --- CHANGED --- */
-  .text-column p {
-    font-family: 'Roboto', sans-serif;
-    font-size: 1.1rem;
-    line-height: 1.8;
-    color: var(--cream); /* Changed from slate */
-    margin-bottom: 1.5rem;
-    opacity: 0.9; /* Slight opacity makes body text softer than headlines */
+  
+  [data-theme="light"] .brand-story .section-label {
+    color: var(--color-green-300);
   }
-
-  /* Responsive styles for smaller screens */
+  
+  /* Title styling */
+  .title {
+    font-family: var(--font-family-heading);
+    font-size: clamp(2rem, 4vw, 3rem);
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: var(--space-xl);
+    color: inherit;
+    font-weight: var(--font-weight-bold);
+  }
+  
+  .title-line {
+    display: block;
+    margin-bottom: 0.2em;
+  }
+  
+  /* Story text */
+  .story-text p {
+    font-family: var(--font-family-body);
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    line-height: var(--line-height-relaxed);
+    margin-bottom: var(--space-lg);
+    opacity: 0.95;
+  }
+  
+  .story-text p:last-child {
+    margin-bottom: var(--space-xl);
+  }
+  
+  /* CTA Button */
+  .story-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-base);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-green-400);
+    text-decoration: none;
+    padding: var(--space-sm) 0;
+    border-bottom: 2px solid transparent;
+    transition: all var(--transition-fast);
+  }
+  
+  [data-theme="light"] .brand-story .story-cta {
+    color: var(--color-green-300);
+  }
+  
+  .story-cta:hover {
+    color: var(--color-green-300);
+    border-bottom-color: currentColor;
+  }
+  
+  .story-cta:hover svg {
+    transform: translateX(4px);
+  }
+  
+  .story-cta svg {
+    transition: transform var(--transition-fast);
+  }
+  
+  /* Tablet styles */
   @media (max-width: 900px) {
     .story-container {
-      grid-template-columns: 1fr; /* Stack the columns */
+      grid-template-columns: 1fr;
+      gap: var(--space-2xl);
     }
-    .title {
-      font-size: 2.5rem;
-      text-align: center;
+    
+    .image-column {
+      order: 2;
     }
+    
     .text-column {
+      order: 1;
       text-align: center;
+    }
+    
+    .content-wrapper {
+      margin: 0 auto;
+    }
+    
+    .story-cta {
+      margin: 0 auto;
+    }
+    
+    .image-accent {
+      display: none; /* Simplify on mobile */
+    }
+  }
+  
+  /* Mobile styles */
+  @media (max-width: 768px) {
+    .brand-story {
+      padding: var(--space-3xl) var(--space-md);
+    }
+    
+    .story-image {
+      max-width: 100%;
+      aspect-ratio: 4/5;
+    }
+    
+    .title {
+      font-size: clamp(1.75rem, 6vw, 2.5rem);
+      margin-bottom: var(--space-lg);
+    }
+    
+    .story-text p {
+      font-size: var(--font-size-base);
+      text-align: left;
+    }
+    
+    .section-label {
+      display: block;
+      text-align: center;
+    }
+  }
+  
+  /* Small mobile */
+  @media (max-width: 480px) {
+    .brand-story {
+      padding: var(--space-2xl) var(--space-sm);
+    }
+    
+    .title-line {
+      font-size: clamp(1.5rem, 7vw, 2rem);
+    }
+  }
+  
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .image-column,
+    .text-column {
+      animation: none;
+    }
+  }
+  
+  /* High contrast mode */
+  @media (prefers-contrast: high) {
+    .story-text p {
+      opacity: 1;
+    }
+    
+    .section-label {
+      opacity: 1;
     }
   }
 </style>
+
+<script>
+  // Intersection Observer for scroll animations
+  document.addEventListener('DOMContentLoaded', () => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          observer.unobserve(entry.target);
+        }
+      });
+    }, observerOptions);
+    
+    // Observe elements
+    const brandStory = document.querySelector('.brand-story');
+    if (brandStory) {
+      observer.observe(brandStory);
+    }
+  });
+</script>

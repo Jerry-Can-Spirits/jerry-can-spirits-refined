@@ -1,41 +1,656 @@
-/* src/styles/global.css */
+/* ============================================
+   ENHANCED GLOBAL.CSS WITH DESIGN SYSTEM
+   ============================================ */
 
+/* 1. DESIGN TOKENS & CSS CUSTOM PROPERTIES */
 :root {
-  /* Core Colors */
-  --deep-green: #2A2F1D;
-  --olive-drab: #6B705C;
-  --parchment: #F5F1E6;
-  --dark-olive: #3D4034;
-
-  /* Utility Colors */
-  --error: #D0342C;
-  --success: #228B22;
-
-  /* Layout Variables */
+  /* ===== Design Tokens: Primitive Colors ===== */
+  /* Greens */
+  --color-green-900: #1a1d13;
+  --color-green-800: #2A2F1D;  /* deep-green */
+  --color-green-700: #3D4034;  /* dark-olive */
+  --color-green-600: #4A4A43;  /* charcoal-olive */
+  --color-green-500: #6B705C;  /* olive-drab */
+  --color-green-400: #8B9178;
+  --color-green-300: #A8AF96;
+  --color-green-200: #C5CCBA;
+  --color-green-100: #E2E5DC;
+  
+  /* Neutrals */
+  --color-neutral-900: #1a1a1a;
+  --color-neutral-800: #2d2d2d;
+  --color-neutral-700: #404040;
+  --color-neutral-600: #525252;
+  --color-neutral-500: #737373;
+  --color-neutral-400: #a3a3a3;
+  --color-neutral-300: #d4d4d4;
+  --color-neutral-200: #e5e5e5;
+  --color-neutral-100: #f5f5f5;
+  --color-neutral-50: #fafafa;
+  
+  /* Parchment shades */
+  --color-parchment-dark: #E8E4D9;
+  --color-parchment: #F5F1E6;
+  --color-parchment-light: #FAF8F3;
+  
+  /* Semantic colors */
+  --color-error: #D0342C;
+  --color-success: #228B22;
+  --color-warning: #F39C12;
+  --color-info: #3498DB;
+  
+  /* ===== Design Tokens: Spacing ===== */
+  --space-unit: 0.25rem;  /* 4px base unit */
+  --space-xxs: calc(var(--space-unit) * 1);   /* 4px */
+  --space-xs: calc(var(--space-unit) * 2);    /* 8px */
+  --space-sm: calc(var(--space-unit) * 3);    /* 12px */
+  --space-md: calc(var(--space-unit) * 4);    /* 16px */
+  --space-lg: calc(var(--space-unit) * 6);    /* 24px */
+  --space-xl: calc(var(--space-unit) * 8);    /* 32px */
+  --space-2xl: calc(var(--space-unit) * 12);  /* 48px */
+  --space-3xl: calc(var(--space-unit) * 16);  /* 64px */
+  --space-4xl: calc(var(--space-unit) * 20);  /* 80px */
+  
+  /* ===== Design Tokens: Typography ===== */
+  --font-family-heading: 'Oswald', sans-serif;
+  --font-family-body: 'Roboto', sans-serif;
+  
+  /* Font sizes using clamp for fluid typography */
+  --font-size-xs: clamp(0.75rem, 1.5vw, 0.875rem);      /* 12-14px */
+  --font-size-sm: clamp(0.875rem, 2vw, 1rem);           /* 14-16px */
+  --font-size-base: clamp(1rem, 2.5vw, 1.125rem);       /* 16-18px */
+  --font-size-lg: clamp(1.125rem, 3vw, 1.25rem);        /* 18-20px */
+  --font-size-xl: clamp(1.25rem, 3.5vw, 1.5rem);        /* 20-24px */
+  --font-size-2xl: clamp(1.5rem, 4vw, 2rem);            /* 24-32px */
+  --font-size-3xl: clamp(2rem, 5vw, 2.5rem);            /* 32-40px */
+  --font-size-4xl: clamp(2.5rem, 6vw, 3rem);            /* 40-48px */
+  --font-size-5xl: clamp(3rem, 7vw, 4rem);              /* 48-64px */
+  
+  /* Line heights */
+  --line-height-tight: 1.2;
+  --line-height-base: 1.6;
+  --line-height-relaxed: 1.8;
+  
+  /* Font weights */
+  --font-weight-normal: 400;
+  --font-weight-bold: 700;
+  
+  /* ===== Design Tokens: Layout ===== */
   --max-width: 1200px;
-  --page-padding: 2rem;
+  --header-height: 70px;
+  --header-height-mobile: 60px;
+  
+  /* Responsive padding */
+  --page-padding: var(--space-md);  /* 16px mobile */
+  
+  /* ===== Design Tokens: Borders & Radius ===== */
+  --border-width: 1px;
+  --border-width-thick: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  
+  /* ===== Design Tokens: Shadows ===== */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* ===== Design Tokens: Transitions ===== */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-slow: 350ms ease;
+  
+  /* ===== Design Tokens: Z-index scale ===== */
+  --z-dropdown: 100;
+  --z-sticky: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-popover: 500;
+  --z-tooltip: 600;
+  
+  /* ===== Light Theme (Default) ===== */
+  --theme-bg-primary: var(--color-parchment);
+  --theme-bg-secondary: var(--color-parchment-light);
+  --theme-bg-tertiary: white;
+  --theme-bg-inverse: var(--color-green-800);
+  
+  --theme-text-primary: var(--color-green-800);
+  --theme-text-secondary: var(--color-green-600);
+  --theme-text-muted: var(--color-neutral-600);
+  --theme-text-inverse: var(--color-parchment);
+  
+  --theme-border: rgba(42, 47, 29, 0.1);
+  --theme-border-strong: rgba(42, 47, 29, 0.2);
+  
+  --theme-accent: var(--color-green-500);
+  --theme-accent-hover: var(--color-green-600);
+  
+  /* ===== Legacy color mappings for backwards compatibility ===== */
+  --deep-green: var(--color-green-800);
+  --olive-drab: var(--color-green-500);
+  --parchment: var(--color-parchment);
+  --dark-olive: var(--color-green-700);
+  --charcoal-olive: var(--color-green-600);
+  --error: var(--color-error);
+  --success: var(--color-success);
 }
 
-/* Base styles */
+/* Tablet breakpoint */
+@media (min-width: 768px) {
+  :root {
+    --page-padding: var(--space-xl);  /* 32px tablet */
+    --header-height: 80px;
+  }
+}
+
+/* Desktop breakpoint */
+@media (min-width: 1024px) {
+  :root {
+    --page-padding: var(--space-2xl);  /* 48px desktop */
+  }
+}
+
+/* ===== Dark Theme ===== */
+[data-theme="dark"] {
+  --theme-bg-primary: var(--color-green-900);
+  --theme-bg-secondary: var(--color-green-800);
+  --theme-bg-tertiary: var(--color-green-700);
+  --theme-bg-inverse: var(--color-parchment);
+  
+  --theme-text-primary: var(--color-parchment);
+  --theme-text-secondary: var(--color-parchment-dark);
+  --theme-text-muted: var(--color-neutral-400);
+  --theme-text-inverse: var(--color-green-800);
+  
+  --theme-border: rgba(245, 241, 230, 0.1);
+  --theme-border-strong: rgba(245, 241, 230, 0.2);
+  
+  --theme-accent: var(--color-green-400);
+  --theme-accent-hover: var(--color-green-300);
+  
+  /* Adjust shadows for dark mode */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+}
+
+/* Auto dark mode based on system preference */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --theme-bg-primary: var(--color-green-900);
+    --theme-bg-secondary: var(--color-green-800);
+    --theme-bg-tertiary: var(--color-green-700);
+    --theme-bg-inverse: var(--color-parchment);
+    
+    --theme-text-primary: var(--color-parchment);
+    --theme-text-secondary: var(--color-parchment-dark);
+    --theme-text-muted: var(--color-neutral-400);
+    --theme-text-inverse: var(--color-green-800);
+    
+    --theme-border: rgba(245, 241, 230, 0.1);
+    --theme-border-strong: rgba(245, 241, 230, 0.2);
+    
+    --theme-accent: var(--color-green-400);
+    --theme-accent-hover: var(--color-green-300);
+    
+    --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.2);
+    --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.3);
+    --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+    --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.5);
+  }
+}
+
+/* ============================================
+   2. CSS RESET / NORMALIZE
+   ============================================ */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+  font-size: 16px;
+  height: 100%;
+}
+
 body {
-  margin: 0;
-  font-family: 'Roboto', sans-serif;
-  background-color: var(--parchment);
-  color: var(--deep-green);
+  min-height: 100%;
+  line-height: var(--line-height-base);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
 }
 
-h1, h2, h3 {
-  font-family: 'Oswald', sans-serif;
-  margin: 0;
-  color: var(--deep-green);
+img,
+picture,
+video,
+canvas,
+svg {
+  display: block;
+  max-width: 100%;
+  height: auto;
 }
 
-/* Add top padding to the main content on all pages */
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  overflow-wrap: break-word;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+ul,
+ol {
+  list-style: none;
+}
+
+/* ============================================
+   3. BASE STYLES
+   ============================================ */
+body {
+  font-family: var(--font-family-body);
+  font-size: var(--font-size-base);
+  background-color: var(--theme-bg-primary);
+  color: var(--theme-text-primary);
+  transition: background-color var(--transition-base), 
+              color var(--transition-base);
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-family-heading);
+  line-height: var(--line-height-tight);
+  color: var(--theme-text-primary);
+  font-weight: var(--font-weight-bold);
+}
+
+h1 { 
+  font-size: var(--font-size-4xl); 
+  margin-bottom: var(--space-lg); 
+}
+
+h2 { 
+  font-size: var(--font-size-3xl); 
+  margin-bottom: var(--space-lg); 
+}
+
+h3 { 
+  font-size: var(--font-size-2xl); 
+  margin-bottom: var(--space-md); 
+}
+
+h4 { 
+  font-size: var(--font-size-xl); 
+  margin-bottom: var(--space-md); 
+}
+
+h5 { 
+  font-size: var(--font-size-lg); 
+  margin-bottom: var(--space-sm); 
+}
+
+h6 { 
+  font-size: var(--font-size-base); 
+  margin-bottom: var(--space-sm); 
+}
+
+p {
+  margin-bottom: var(--space-md);
+  line-height: var(--line-height-base);
+}
+
+/* Links */
+a {
+  color: var(--theme-accent);
+  transition: color var(--transition-fast);
+}
+
+a:hover {
+  color: var(--theme-accent-hover);
+}
+
+/* Focus styles */
+:focus-visible {
+  outline: var(--border-width-thick) solid var(--theme-accent);
+  outline-offset: 2px;
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+}
+
+/* Main content */
 main {
-  padding-top: 50px;
+  padding-top: var(--header-height-mobile);
+  min-height: 100vh;
+  transition: padding-top var(--transition-base);
 }
 
-/* REMOVE the top padding ONLY on the homepage */
-body.homepage main {
+@media (min-width: 768px) {
+  main {
+    padding-top: var(--header-height);
+  }
+}
+
+body.homepage main,
+main[data-homepage="true"] {
   padding-top: 0;
+}
+
+/* Smooth scrolling */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+/* ============================================
+   4. UTILITY CLASSES
+   ============================================ */
+
+/* Container */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 var(--page-padding);
+}
+
+/* Text utilities */
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+.text-primary {
+  color: var(--theme-text-primary);
+}
+
+.text-secondary {
+  color: var(--theme-text-secondary);
+}
+
+.text-muted {
+  color: var(--theme-text-muted);
+}
+
+/* Spacing utilities */
+.mt-0 {
+  margin-top: 0;
+}
+
+.mt-sm {
+  margin-top: var(--space-sm);
+}
+
+.mt-md {
+  margin-top: var(--space-md);
+}
+
+.mt-lg {
+  margin-top: var(--space-lg);
+}
+
+.mt-xl {
+  margin-top: var(--space-xl);
+}
+
+.mb-0 {
+  margin-bottom: 0;
+}
+
+.mb-sm {
+  margin-bottom: var(--space-sm);
+}
+
+.mb-md {
+  margin-bottom: var(--space-md);
+}
+
+.mb-lg {
+  margin-bottom: var(--space-lg);
+}
+
+.mb-xl {
+  margin-bottom: var(--space-xl);
+}
+
+.p-sm {
+  padding: var(--space-sm);
+}
+
+.p-md {
+  padding: var(--space-md);
+}
+
+.p-lg {
+  padding: var(--space-lg);
+}
+
+.p-xl {
+  padding: var(--space-xl);
+}
+
+/* Display utilities */
+.hidden {
+  display: none;
+}
+
+.block {
+  display: block;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.flex {
+  display: flex;
+}
+
+.grid {
+  display: grid;
+}
+
+/* Responsive utilities */
+.mobile-only {
+  display: block;
+}
+
+.tablet-only {
+  display: none;
+}
+
+.desktop-only {
+  display: none;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none;
+  }
+  
+  .tablet-only {
+    display: block;
+  }
+  
+  .desktop-only {
+    display: none;
+  }
+}
+
+@media (min-width: 1024px) {
+  .mobile-only {
+    display: none;
+  }
+  
+  .tablet-only {
+    display: none;
+  }
+  
+  .desktop-only {
+    display: block;
+  }
+}
+
+/* Accessibility */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* ============================================
+   5. LOADING STATES
+   ============================================ */
+
+/* Skeleton loader */
+.skeleton {
+  animation: skeleton-loading 1.5s ease-in-out infinite;
+  background: linear-gradient(
+    90deg,
+    var(--theme-bg-secondary) 0%,
+    var(--theme-bg-tertiary) 50%,
+    var(--theme-bg-secondary) 100%
+  );
+  background-size: 200% 100%;
+  border-radius: var(--radius-sm);
+}
+
+@keyframes skeleton-loading {
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
+}
+
+/* Spinner */
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--theme-border);
+  border-top-color: var(--theme-accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: var(--z-overlay);
+}
+
+/* ============================================
+   6. THEME TOGGLE BUTTON
+   ============================================ */
+.theme-toggle {
+  position: fixed;
+  bottom: var(--space-lg);
+  right: var(--space-lg);
+  width: 50px;
+  height: 50px;
+  border-radius: var(--radius-full);
+  background-color: var(--theme-bg-inverse);
+  color: var(--theme-text-inverse);
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: var(--shadow-lg);
+  transition: transform var(--transition-fast), 
+              box-shadow var(--transition-fast);
+  z-index: var(--z-sticky);
+}
+
+.theme-toggle:hover {
+  transform: scale(1.1);
+  box-shadow: var(--shadow-xl);
+}
+
+.theme-toggle svg {
+  width: 24px;
+  height: 24px;
+}
+
+/* ============================================
+   7. PRINT STYLES
+   ============================================ */
+@media print {
+  .no-print,
+  header,
+  footer,
+  nav,
+  .theme-toggle {
+    display: none !important;
+  }
+  
+  main {
+    padding: 0;
+  }
+  
+  body {
+    color: black;
+    background: white;
+  }
 }

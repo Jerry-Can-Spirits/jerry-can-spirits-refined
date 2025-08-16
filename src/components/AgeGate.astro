@@ -1,97 +1,330 @@
 ---
 // src/components/AgeGate.astro
 ---
+
 <div id="age-gate-overlay">
   <div id="age-gate-modal">
     <div class="logo-container">
-      <img src="/logo-primary.png" alt="Jerry Can Spirits Logo" width="150" />
+      <img 
+        src="/logo-primary.png" 
+        alt="Jerry Can Spirits Logo" 
+        width="150"
+        height="50"
+        loading="eager"
+      />
     </div>
+    
     <h2>Age Verification</h2>
     <p>You must be of legal drinking age to enter this site. Please enter your date of birth.</p>
+    
     <form id="age-gate-form">
       <div class="dob-inputs">
         <div class="input-group">
           <label for="dob-day">Day</label>
-          <input type="number" id="dob-day" placeholder="DD" min="1" max="31" required>
+          <select id="dob-day" required aria-label="Day of birth">
+            <option value="">DD</option>
+          </select>
         </div>
+        
         <div class="input-group">
           <label for="dob-month">Month</label>
-          <input type="number" id="dob-month" placeholder="MM" min="1" max="12" required>
+          <select id="dob-month" required aria-label="Month of birth">
+            <option value="">MM</option>
+            <option value="1">January</option>
+            <option value="2">February</option>
+            <option value="3">March</option>
+            <option value="4">April</option>
+            <option value="5">May</option>
+            <option value="6">June</option>
+            <option value="7">July</option>
+            <option value="8">August</option>
+            <option value="9">September</option>
+            <option value="10">October</option>
+            <option value="11">November</option>
+            <option value="12">December</option>
+          </select>
         </div>
+        
         <div class="input-group">
           <label for="dob-year">Year</label>
-          <input type="number" id="dob-year" placeholder="YYYY" min="1920" max="2024" required>
+          <select id="dob-year" required aria-label="Year of birth">
+            <option value="">YYYY</option>
+          </select>
         </div>
       </div>
-      <button type="submit" class="submit-button">Enter Site</button>
+      
+      <button type="submit" class="submit-button" id="verify-age-btn">
+        <span class="button-text">Enter Site</span>
+        <span class="button-loader"></span>
+      </button>
     </form>
-    <p id="age-gate-error" class="error-message"></p>
-    <p class="responsible-drinking">Please drink responsibly. For more information, visit <a href="https://www.drinkaware.co.uk" target="_blank" rel="noopener noreferrer">drinkaware.co.uk</a>.</p>
+    
+    <p id="age-gate-error" class="error-message" role="alert" aria-live="polite"></p>
+    
+    <p class="responsible-drinking">
+      Please drink responsibly. For more information, visit 
+      <a href="https://www.drinkaware.co.uk" target="_blank" rel="noopener noreferrer">
+        drinkaware.co.uk
+      </a>
+    </p>
   </div>
 </div>
 
 <style>
+  /* Use design tokens from global.css */
   #age-gate-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(25, 30, 25, 0.95);
-    display: none; /* This is correct! Hides by default. */
+    background-color: rgba(25, 30, 25, 0.98);
+    display: none; /* Hidden by default */
     justify-content: center;
     align-items: center;
-    z-index: 9999;
-    backdrop-filter: blur(5px);
+    z-index: 10000; /* Highest z-index to ensure it's always on top */
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    padding: var(--space-md);
+    overflow-y: auto;
   }
+  
+  #age-gate-overlay.visible {
+    display: flex;
+  }
+  
   #age-gate-modal {
-    background-color: var(--parchment);
-    color: var(--dark-olive);
-    padding: 2.5rem;
-    border-radius: 8px;
+    background-color: var(--theme-bg-primary, var(--parchment));
+    color: var(--theme-text-primary, var(--dark-olive));
+    padding: clamp(1.5rem, 5vw, 2.5rem);
+    border-radius: var(--radius-lg, 16px);
     text-align: center;
     max-width: 450px;
-    width: 90%;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-xl);
+    animation: modalSlideIn 0.3s ease-out;
   }
-  .logo-container { margin-bottom: 1rem; }
+  
+  @keyframes modalSlideIn {
+    from {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .logo-container { 
+    margin-bottom: var(--space-lg);
+    display: flex;
+    justify-content: center;
+  }
+  
+  .logo-container img {
+    height: 50px;
+    width: auto;
+    object-fit: contain;
+  }
+  
   #age-gate-modal h2 {
-    font-family: 'Oswald', sans-serif;
-    font-size: 2rem;
+    font-family: var(--font-family-heading);
+    font-size: clamp(1.5rem, 4vw, 2rem);
     text-transform: uppercase;
-    margin-bottom: 0.5rem;
+    margin-bottom: var(--space-sm);
+    letter-spacing: 0.05em;
+    color: var(--theme-text-primary);
   }
+  
   #age-gate-modal p {
-    font-family: 'Roboto', sans-serif;
-    line-height: 1.6;
-    margin-bottom: 1.5rem;
+    font-family: var(--font-family-body);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--space-lg);
+    font-size: var(--font-size-base);
+    color: var(--theme-text-secondary);
   }
+  
+  /* Date inputs */
   .dob-inputs {
     display: flex;
     justify-content: center;
-    gap: 1rem;
-    margin-bottom: 1.5rem;
+    gap: clamp(0.5rem, 2vw, 1rem);
+    margin-bottom: var(--space-lg);
+    flex-wrap: wrap;
   }
+  
   .input-group {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
+    flex: 1;
+    min-width: 70px;
+    max-width: 120px;
   }
-  .input-group label { font-size: 0.8rem; margin-bottom: 0.25rem; }
-  .input-group input {
-    width: 80px; padding: 10px; border: 1px solid var(--dark-olive);
-    border-radius: 4px; font-size: 1rem; text-align: center;
+  
+  .input-group label { 
+    font-size: var(--font-size-xs);
+    margin-bottom: var(--space-xs);
+    color: var(--theme-text-muted);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
   }
-  .input-group input#dob-year { width: 100px; }
+  
+  .input-group select {
+    width: 100%;
+    padding: clamp(8px, 2vw, 12px);
+    border: 1px solid var(--theme-border-strong);
+    border-radius: var(--radius-sm);
+    font-size: clamp(14px, 3vw, 16px);
+    text-align: center;
+    background-color: var(--theme-bg-secondary);
+    color: var(--theme-text-primary);
+    cursor: pointer;
+    transition: border-color var(--transition-fast),
+                box-shadow var(--transition-fast);
+    appearance: none;
+    background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 0.5rem center;
+    background-size: 1em;
+    padding-right: 2rem;
+  }
+  
+  .input-group select:focus {
+    outline: none;
+    border-color: var(--theme-accent);
+    box-shadow: 0 0 0 3px rgba(107, 112, 92, 0.1);
+  }
+  
+  .input-group select.error {
+    border-color: var(--color-error);
+  }
+  
+  /* Submit button */
   .submit-button {
-    background-color: var(--deep-green); color: var(--parchment);
-    width: 100%; padding: 14px; border: none; border-radius: 4px;
-    font-family: 'Oswald', sans-serif; font-size: 1.2rem;
-    text-transform: uppercase; cursor: pointer; transition: background-color 0.2s ease;
+    background-color: var(--theme-accent, var(--deep-green));
+    color: var(--theme-text-inverse, var(--parchment));
+    width: 100%;
+    padding: clamp(12px, 3vw, 16px);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-heading);
+    font-size: clamp(1rem, 3vw, 1.2rem);
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background-color var(--transition-fast),
+                transform var(--transition-fast);
+    font-weight: var(--font-weight-bold);
+    letter-spacing: 0.05em;
+    position: relative;
+    overflow: hidden;
   }
-  .submit-button:hover { background-color: var(--dark-olive); }
-  .error-message { color: #a00; font-weight: bold; margin-top: 1rem; height: 1em; }
-  .responsible-drinking { font-size: 0.8rem; margin-top: 2rem; margin-bottom: 0; }
-  .responsible-drinking a { color: var(--dark-olive); }
+  
+  .submit-button:hover:not(:disabled) {
+    background-color: var(--theme-accent-hover);
+    transform: translateY(-1px);
+  }
+  
+  .submit-button:active:not(:disabled) {
+    transform: translateY(0);
+  }
+  
+  .submit-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .button-text {
+    display: inline-block;
+    transition: opacity var(--transition-fast);
+  }
+  
+  .button-loader {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--theme-text-inverse);
+    border-top-color: transparent;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+  
+  .submit-button.loading .button-text {
+    opacity: 0;
+  }
+  
+  .submit-button.loading .button-loader {
+    opacity: 1;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+  }
+  
+  /* Error message */
+  .error-message {
+    color: var(--color-error);
+    font-weight: var(--font-weight-bold);
+    margin-top: var(--space-md);
+    min-height: 1.5em;
+    font-size: var(--font-size-sm);
+  }
+  
+  /* Responsible drinking message */
+  .responsible-drinking {
+    font-size: var(--font-size-xs);
+    margin-top: var(--space-xl);
+    margin-bottom: 0;
+    color: var(--theme-text-muted);
+  }
+  
+  .responsible-drinking a {
+    color: var(--theme-accent);
+    text-decoration: underline;
+  }
+  
+  .responsible-drinking a:hover {
+    color: var(--theme-accent-hover);
+  }
+  
+  /* Mobile optimizations */
+  @media (max-width: 480px) {
+    #age-gate-modal {
+      margin: var(--space-md);
+    }
+    
+    .dob-inputs {
+      gap: var(--space-xs);
+    }
+    
+    .input-group {
+      min-width: 60px;
+    }
+    
+    .input-group select {
+      padding-right: 1.5rem;
+      font-size: 16px; /* Prevents zoom on iOS */
+    }
+  }
+  
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    #age-gate-modal,
+    .submit-button,
+    .button-loader {
+      animation: none;
+      transition: none;
+    }
+  }
 </style>
 
 <script>
@@ -102,7 +335,7 @@
       date.setTime(date.getTime() + (days * 24 * 60 * 60 * 1000));
       expires = "; expires=" + date.toUTCString();
     }
-    document.cookie = name + "=" + (value || "") + expires + "; path=/";
+    document.cookie = name + "=" + (value || "") + expires + "; path=/; SameSite=Lax";
   }
 
   function getCookie(name: string) {
@@ -116,54 +349,125 @@
     return null;
   }
 
-  // Main logic
+  // Populate dropdowns and initialize
   document.addEventListener('DOMContentLoaded', () => {
     const ageGateOverlay = document.getElementById('age-gate-overlay');
     const ageGateForm = document.getElementById('age-gate-form');
     const errorMessage = document.getElementById('age-gate-error');
-    const dayInput = document.getElementById('dob-day') as HTMLInputElement;
-    const monthInput = document.getElementById('dob-month') as HTMLInputElement;
-    const yearInput = document.getElementById('dob-year') as HTMLInputElement;
+    const daySelect = document.getElementById('dob-day') as HTMLSelectElement;
+    const monthSelect = document.getElementById('dob-month') as HTMLSelectElement;
+    const yearSelect = document.getElementById('dob-year') as HTMLSelectElement;
+    const submitButton = document.getElementById('verify-age-btn') as HTMLButtonElement;
 
-    if (!ageGateOverlay || !ageGateForm || !errorMessage || !dayInput || !monthInput || !yearInput) {
-      console.error('Age Gate component is missing required HTML elements. Aborting script.');
-      return; 
+    if (!ageGateOverlay || !ageGateForm || !errorMessage || !daySelect || !monthSelect || !yearSelect) {
+      console.error('Age Gate component is missing required elements');
+      return;
     }
 
-    yearInput.max = new Date().getFullYear().toString();
-
-    // Check if the user has been verified
-    if (getCookie('ageGateVerified') !== 'true') {
-      // If they are NOT verified, show the age gate
-      ageGateOverlay.style.display = 'flex';
+    // Populate days (1-31)
+    for (let i = 1; i <= 31; i++) {
+      const option = document.createElement('option');
+      option.value = i.toString();
+      option.textContent = i.toString().padStart(2, '0');
+      daySelect.appendChild(option);
     }
 
-    ageGateForm.addEventListener('submit', (event) => {
-      event.preventDefault();
+    // Populate years (current year - 100 to current year)
+    const currentYear = new Date().getFullYear();
+    for (let i = currentYear; i >= currentYear - 100; i--) {
+      const option = document.createElement('option');
+      option.value = i.toString();
+      option.textContent = i.toString();
+      yearSelect.appendChild(option);
+    }
 
-      const day = parseInt(dayInput.value, 10);
-      const month = parseInt(monthInput.value, 10);
-      const year = parseInt(yearInput.value, 10);
-      
-      if (!day || !month || !year) {
-          errorMessage.textContent = 'Please enter a valid date.';
-          return;
+    // Update days based on month/year selection
+    function updateDays() {
+      const month = parseInt(monthSelect.value);
+      const year = parseInt(yearSelect.value);
+      if (!month) return;
+
+      const daysInMonth = new Date(year || 2024, month, 0).getDate();
+      const currentDay = parseInt(daySelect.value);
+
+      // Clear and repopulate days
+      daySelect.innerHTML = '<option value="">DD</option>';
+      for (let i = 1; i <= daysInMonth; i++) {
+        const option = document.createElement('option');
+        option.value = i.toString();
+        option.textContent = i.toString().padStart(2, '0');
+        if (i === currentDay) option.selected = true;
+        daySelect.appendChild(option);
       }
-      
+    }
+
+    monthSelect.addEventListener('change', updateDays);
+    yearSelect.addEventListener('change', updateDays);
+
+    // Check if user is already verified
+    if (getCookie('ageGateVerified') !== 'true') {
+      ageGateOverlay.classList.add('visible');
+      // Prevent scrolling when age gate is open
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Form submission
+    ageGateForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      errorMessage.textContent = '';
+
+      const day = parseInt(daySelect.value);
+      const month = parseInt(monthSelect.value);
+      const year = parseInt(yearSelect.value);
+
+      // Validation
+      if (!day || !month || !year) {
+        errorMessage.textContent = 'Please enter your complete date of birth.';
+        return;
+      }
+
+      // Add loading state
+      submitButton.classList.add('loading');
+      submitButton.disabled = true;
+
+      // Simulate processing (remove in production)
+      await new Promise(resolve => setTimeout(resolve, 500));
+
       const birthDate = new Date(year, month - 1, day);
       const today = new Date();
       
+      // Calculate age
       let age = today.getFullYear() - birthDate.getFullYear();
-      const m = today.getMonth() - birthDate.getMonth();
-      if (m < 0 || (m === 0 && today.getDate() < birthDate.getDate())) {
-          age--;
+      const monthDiff = today.getMonth() - birthDate.getMonth();
+      if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDate.getDate())) {
+        age--;
       }
+
+      // Remove loading state
+      submitButton.classList.remove('loading');
+      submitButton.disabled = false;
 
       if (age >= 18) {
         setCookie('ageGateVerified', 'true', 30);
-        ageGateOverlay.style.display = 'none';
+        ageGateOverlay.classList.remove('visible');
+        document.body.style.overflow = '';
+        
+        // Dispatch event for analytics
+        window.dispatchEvent(new CustomEvent('ageVerified', { detail: { age } }));
       } else {
         errorMessage.textContent = 'Sorry, you must be 18 or over to enter this site.';
+        
+        // Clear form
+        daySelect.value = '';
+        monthSelect.value = '';
+        yearSelect.value = '';
+      }
+    });
+
+    // Keyboard navigation
+    ageGateOverlay.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        e.preventDefault(); // Prevent closing
       }
     });
   });

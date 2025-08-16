@@ -1,115 +1,422 @@
 ---
 // src/components/Hero.astro
 ---
-<section class="hero">
-  <div class="hero-content">
-    <h1 class="headline">MORE THAN A RUM. IT'S STANDARD ISSUE.</h1>
-    <p class="tagline">The essential spirit for any expedition, engineered in the UK.</p>
-    <a href="#signup" class="cta-button">Become an Insider</a>
+
+<section class="hero" id="hero">
+  <!-- Background image container -->
+  <div class="hero-background" aria-hidden="true">
+    <picture>
+      <source 
+        media="(max-width: 768px)" 
+        srcset="/hero-background-mobile.jpg"
+      >
+      <source 
+        media="(min-width: 769px)" 
+        srcset="/hero-background.jpg"
+      >
+      <img 
+        src="/hero-background.jpg" 
+        alt=""
+        loading="eager"
+        class="hero-bg-image"
+      >
+    </picture>
+    <div class="hero-overlay"></div>
   </div>
-  <div class="scroll-indicator">
-    <span class="arrow">↓</span>
-    Scroll
+  
+  <!-- Hero content -->
+  <div class="hero-content">
+    <h1 class="headline">
+      <span class="headline-line">MORE THAN A RUM.</span>
+      <span class="headline-line">IT'S STANDARD ISSUE.</span>
+    </h1>
+    <p class="tagline">The essential spirit for any expedition, engineered in the UK.</p>
+    <a href="#signup" class="cta-button" aria-label="Become an Insider - Sign up for updates">
+      <span>Become an Insider</span>
+      <svg class="button-arrow" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M5 12h14M12 5l7 7-7 7"/>
+      </svg>
+    </a>
+  </div>
+  
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator" role="presentation">
+    <span class="arrow" aria-hidden="true">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+        <path d="M12 5v14M5 12l7 7 7-7"/>
+      </svg>
+    </span>
+    <span class="scroll-text">Scroll</span>
   </div>
 </section>
 
 <style>
   .hero {
-    height: 100vh; /* Make the section take up the full browser height */
+    position: relative;
+    height: 100vh;
+    min-height: 600px; /* Ensure minimum height on small devices */
+    max-height: 1080px; /* Cap height on very tall screens */
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
     text-align: center;
-    padding: var(--page-padding);
-    background-image: 
-      linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-      linear-gradient(to bottom, #F7EDD2 0%, rgba(247, 237, 210, 0) 20%),
-      url('/hero-background.jpg');
-    background-size: cover;
-    background-position: center;
-    color: var(--parchment);
-    position: relative;
+    overflow: hidden;
+    isolation: isolate; /* Create new stacking context */
   }
-
-  .hero-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 1.5rem; /* Adds space between text and button */
-  }
-
-  h1.headline {
-    font-size: 4.5rem;
-    text-transform: uppercase;
-    letter-spacing: 2px;
-    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
-    margin-bottom: 0;
-    color: var(--parchment);
-  }
-
-  .tagline {
-    font-size: 1.5rem;
-    font-weight: 400;
-    max-width: 700px;
-    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
-    margin-bottom: 1rem;
-    color: var(--parchment);
-  }
-
-  /* --- NEW BUTTON STYLE --- */
-  .cta-button {
-    display: inline-block;
-    background-color: var(--olive-drab); /* Using new brand accent */
-    color: var(--parchment);
-    padding: 12px 28px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: background-color 0.2s ease, transform 0.2s ease;
-  }
-
-  .cta-button:hover {
-    background-color: #8A907E; /* A slightly lighter olive for hover */
-    transform: translateY(-2px);
-  }
-
-  .scroll-indicator {
+  
+  /* Background container - positioned behind everything */
+  .hero-background {
     position: absolute;
-    bottom: 2rem;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2; /* Behind content */
+  }
+  
+  .hero-bg-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    object-position: center;
+  }
+  
+  /* Gradient overlay for better text contrast */
+  .hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      to bottom,
+      rgba(0, 0, 0, 0.3) 0%,
+      rgba(0, 0, 0, 0.5) 50%,
+      rgba(0, 0, 0, 0.7) 100%
+    );
+    z-index: -1;
+  }
+  
+  /* Hero content container */
+  .hero-content {
+    position: relative;
+    z-index: 1; /* Above background */
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
-    font-family: 'Oswald', sans-serif;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    opacity: 0.8;
-    animation: bounce 2s infinite;
+    gap: clamp(1rem, 3vw, 2rem);
+    padding: var(--page-padding);
+    max-width: 900px;
+    width: 100%;
+    margin-top: var(--header-height-mobile); /* Account for fixed header */
   }
-
-  @keyframes bounce {
-    0%, 20%, 50%, 80%, 100% {
+  
+  @media (min-width: 768px) {
+    .hero-content {
+      margin-top: var(--header-height);
+    }
+  }
+  
+  /* Headline with fluid typography */
+  h1.headline {
+    font-family: var(--font-family-heading);
+    font-size: clamp(1.75rem, 6vw, 4.5rem);
+    line-height: 1.1;
+    text-transform: uppercase;
+    letter-spacing: 0.02em;
+    font-weight: var(--font-weight-bold);
+    margin: 0;
+    color: var(--color-parchment);
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7),
+                 0 0 40px rgba(0, 0, 0, 0.5);
+  }
+  
+  .headline-line {
+    display: block;
+    animation: fadeInUp 0.8s ease-out backwards;
+  }
+  
+  .headline-line:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+  
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
       transform: translateY(0);
     }
+  }
+  
+  /* Tagline */
+  .tagline {
+    font-family: var(--font-family-body);
+    font-size: clamp(1rem, 2.5vw, 1.5rem);
+    line-height: var(--line-height-base);
+    font-weight: 400;
+    max-width: 700px;
+    margin: 0;
+    color: var(--color-parchment);
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.7);
+    opacity: 0.95;
+    animation: fadeInUp 0.8s ease-out 0.4s backwards;
+  }
+  
+  /* CTA Button */
+  .cta-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background-color: var(--color-green-500);
+    color: var(--color-parchment);
+    padding: clamp(12px, 2vw, 16px) clamp(24px, 4vw, 32px);
+    border-radius: var(--radius-sm);
+    text-decoration: none;
+    font-family: var(--font-family-heading);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    transition: background-color var(--transition-fast),
+                transform var(--transition-fast),
+                box-shadow var(--transition-fast);
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    animation: fadeInUp 0.8s ease-out 0.6s backwards;
+    position: relative;
+    overflow: hidden;
+  }
+  
+  .cta-button::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+    transition: left 0.5s ease;
+  }
+  
+  .cta-button:hover {
+    background-color: var(--color-green-400);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 30px rgba(0, 0, 0, 0.4);
+  }
+  
+  .cta-button:hover::before {
+    left: 100%;
+  }
+  
+  .cta-button:hover .button-arrow {
+    transform: translateX(4px);
+  }
+  
+  .cta-button:active {
+    transform: translateY(0);
+  }
+  
+  .button-arrow {
+    transition: transform var(--transition-fast);
+  }
+  
+  /* Scroll indicator */
+  .scroll-indicator {
+    position: absolute;
+    bottom: clamp(1rem, 4vw, 2rem);
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--space-xs);
+    font-family: var(--font-family-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: var(--font-size-xs);
+    color: var(--color-parchment);
+    opacity: 0.7;
+    animation: bounce 2s infinite, fadeInUp 0.8s ease-out 0.8s backwards;
+    cursor: pointer;
+    padding: var(--space-sm);
+    transition: opacity var(--transition-fast);
+  }
+  
+  .scroll-indicator:hover {
+    opacity: 1;
+  }
+  
+  .arrow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  @keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+      transform: translateX(-50%) translateY(0);
+    }
     40% {
-      transform: translateY(-10px);
+      transform: translateX(-50%) translateY(-10px);
     }
     60% {
-      transform: translateY(-5px);
+      transform: translateX(-50%) translateY(-5px);
     }
   }
-
+  
+  /* Mobile optimizations */
   @media (max-width: 768px) {
-    .headline {
-      font-size: 2.5rem;
+    .hero {
+      min-height: 100vh; /* Full height on mobile */
+      min-height: -webkit-fill-available; /* iOS fix */
     }
+    
+    .hero-content {
+      padding: var(--space-md);
+      gap: var(--space-md);
+    }
+    
+    .headline {
+      font-size: clamp(1.5rem, 8vw, 2.5rem);
+    }
+    
+    .headline-line {
+      margin-bottom: 0.2em;
+    }
+    
     .tagline {
-      font-size: 1.2rem;
+      font-size: clamp(0.9rem, 4vw, 1.2rem);
+      padding: 0 var(--space-md);
+    }
+    
+    .cta-button {
+      font-size: 1rem;
+      padding: 14px 28px;
+    }
+    
+    /* Adjust overlay for better mobile visibility */
+    .hero-overlay {
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.4) 0%,
+        rgba(0, 0, 0, 0.6) 50%,
+        rgba(0, 0, 0, 0.8) 100%
+      );
+    }
+  }
+  
+  /* Tablet optimizations */
+  @media (min-width: 769px) and (max-width: 1024px) {
+    .headline {
+      font-size: 3rem;
+    }
+    
+    .tagline {
+      font-size: 1.25rem;
+    }
+  }
+  
+  /* Large screens */
+  @media (min-width: 1440px) {
+    .hero-content {
+      max-width: 1200px;
+    }
+  }
+  
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .headline-line,
+    .tagline,
+    .cta-button,
+    .scroll-indicator {
+      animation: none;
+    }
+    
+    .cta-button::before {
+      display: none;
+    }
+  }
+  
+  /* High contrast mode support */
+  @media (prefers-contrast: high) {
+    .hero-overlay {
+      background: linear-gradient(
+        to bottom,
+        rgba(0, 0, 0, 0.7) 0%,
+        rgba(0, 0, 0, 0.8) 50%,
+        rgba(0, 0, 0, 0.9) 100%
+      );
+    }
+    
+    .headline,
+    .tagline {
+      text-shadow: 3px 3px 0 black;
     }
   }
 </style>
+
+<script>
+  // Smooth scroll when clicking the scroll indicator
+  document.addEventListener('DOMContentLoaded', () => {
+    const scrollIndicator = document.querySelector('.scroll-indicator');
+    
+    if (scrollIndicator) {
+      scrollIndicator.addEventListener('click', () => {
+        const heroHeight = document.getElementById('hero')?.offsetHeight || window.innerHeight;
+        window.scrollTo({
+          top: heroHeight,
+          behavior: 'smooth'
+        });
+      });
+    }
+    
+    // Parallax effect on scroll (optional)
+    const hero = document.getElementById('hero');
+    const heroBackground = document.querySelector('.hero-bg-image') as HTMLElement;
+    
+    if (hero && heroBackground) {
+      let ticking = false;
+      
+      function updateParallax() {
+        const scrolled = window.pageYOffset;
+        const speed = 0.5; // Adjust speed of parallax
+        
+        if (hero && scrolled < hero.offsetHeight) {
+          heroBackground.style.transform = `translateY(${scrolled * speed}px)`;
+        }
+        
+        ticking = false;
+      }
+      
+      function requestTick() {
+        if (!ticking) {
+          window.requestAnimationFrame(updateParallax);
+          ticking = true;
+        }
+      }
+      
+      // Check for reduced motion preference
+      if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        window.addEventListener('scroll', requestTick, { passive: true });
+      }
+    }
+    
+    // Hide scroll indicator when user starts scrolling
+    let scrollTimeout: ReturnType<typeof setTimeout>;
+    const hideScrollIndicator = () => {
+      const indicator = document.querySelector('.scroll-indicator') as HTMLElement;
+      if (indicator && window.pageYOffset > 50) {
+        indicator.style.opacity = '0';
+        indicator.style.pointerEvents = 'none';
+      }
+    };
+    
+    window.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(hideScrollIndicator, 100);
+    }, { passive: true });
+  });
+</script>
