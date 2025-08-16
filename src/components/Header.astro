@@ -1,104 +1,164 @@
 ---
 // src/components/Header.astro
+const { homepage } = Astro.props;
 ---
-<header class="site-header">
+<header id="site-header" class:list={{ 'header-on-homepage': homepage }}>
   <div class="header-container">
-    <a href="/" class="logo" aria-label="Jerry Can Spirits Homepage">
-      <img src="/logo-primary.png" alt="Jerry Can Spirits Logo" />
+    <a href="/" class="logo-link">
+      <img src="/logo-primary.png" alt="Jerry Can Spirits Logo" class="logo-image">
     </a>
-    <nav class="main-nav">
-      <a href="/ethos">Our Ethos</a>
-      <a href="/products">Products</a>
-      <a href="#footer">Contact</a>
+    <nav class="desktop-nav">
+      <ul>
+        <li><a href="/ethos">Our Ethos</a></li>
+        <li><a href="/products">Products</a></li>
+        <li><a href="/serves">Field Manual</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
+    </nav>
+    <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Open menu">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+    </button>
+  </div>
+
+  <div id="mobile-menu-overlay" class="mobile-menu-overlay">
+    <nav class="mobile-nav">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/ethos">Our Ethos</a></li>
+        <li><a href="/products">Products</a></li>
+        <li><a href="/serves">Field Manual</a></li>
+        <li><a href="/contact">Contact</a></li>
+      </ul>
     </nav>
   </div>
 </header>
 
 <style>
-  /* Solid background is now the default */
-  .site-header {
+  /* Header Styles */
+  #site-header {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
-    padding: 1rem 2rem;
-    z-index: 100;
-    background-color: rgba(245, 241, 230, 0.85); /* Parchment */
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(42, 47, 29, 0.1); /* Deep green border */
-    transition: background-color 0.4s ease, border-color 0.4s ease, backdrop-filter 0.4s ease;
-  }
-
-  /* Transparent style ONLY applies on the homepage at the top */
-  body.homepage .site-header {
+    z-index: 1000;
+    padding: 1rem var(--page-padding);
     background-color: transparent;
-    backdrop-filter: blur(0px);
-    -webkit-backdrop-filter: blur(0px);
-    border-bottom-color: transparent;
+    transition: background-color 0.3s ease, border-bottom 0.3s ease;
+  }
+  #site-header.is-scrolled {
+    background-color: var(--parchment);
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+  }
+  .header-container {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .logo-image { height: 50px; }
+
+  /* Desktop Navigation */
+  .desktop-nav ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    gap: 2rem;
+  }
+  .desktop-nav a {
+    text-decoration: none;
+    color: var(--deep-green);
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+  }
+  .header-on-homepage .desktop-nav a {
+    color: var(--parchment); /* White text on homepage hero */
+  }
+  #site-header.is-scrolled .desktop-nav a {
+    color: var(--deep-green); /* Dark text when scrolled */
   }
 
-  body.homepage .site-header.scrolled {
-    background-color: rgba(245, 241, 230, 0.85);
-    -webkit-backdrop-filter: blur(10px);
-    backdrop-filter: blur(10px);
-    border-bottom: 1px solid rgba(42, 47, 29, 0.1);
+  /* Mobile Menu Button (Hamburger) */
+  .mobile-menu-toggle {
+    display: none; /* Hidden on desktop */
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--deep-green);
+  }
+  .header-on-homepage .mobile-menu-toggle {
+    color: var(--parchment);
+  }
+  #site-header.is-scrolled .mobile-menu-toggle {
+    color: var(--deep-green);
   }
 
-  .main-nav a {
+  /* Mobile Menu Overlay */
+  .mobile-menu-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: var(--parchment);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transform: translateY(-100%);
+    transition: transform 0.4s ease;
+    z-index: 999; /* Below the header itself */
+  }
+  .mobile-menu-overlay.is-open {
+    transform: translateY(0);
+  }
+  .mobile-nav ul {
+    list-style: none;
+    padding: 0;
+    text-align: center;
+  }
+  .mobile-nav li {
+    margin-bottom: 2rem;
+  }
+  .mobile-nav a {
+    font-size: 2rem;
     color: var(--deep-green);
     text-decoration: none;
     font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: color 0.3s ease;
   }
 
-  .main-nav a:hover {
-    color: var(--olive-drab);
-  }
-  
-  /* Text is light ONLY on the homepage at the top */
-  body.homepage .site-header .main-nav a {
-    color: var(--parchment);
-  }
-
-  body.homepage .site-header.scrolled .main-nav a {
-    color: var(--deep-green);
-  }
-
-  .header-container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
-  .logo img {
-    height: 60px;
-    width: auto;
-    transition: opacity 0.3s ease;
-  }
-  .logo:hover img {
-    opacity: 0.8;
-  }
-
-  .main-nav {
-    display: flex;
-    gap: 2rem;
+  /* Responsive Breakpoint */
+  @media (max-width: 768px) {
+    .desktop-nav {
+      display: none;
+    }
+    .mobile-menu-toggle {
+      display: block;
+    }
   }
 </style>
 
-<script>
-  const header = document.querySelector('.site-header');
-  if (header) {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 50) {
-        header.classList.add('scrolled');
-      } else {
-        header.classList.remove('scrolled');
-      }
-    });
+<script is:inline>
+  // Script for mobile menu toggle
+  const toggleBtn = document.getElementById('mobile-menu-toggle');
+  const mobileMenu = document.getElementById('mobile-menu-overlay');
+  toggleBtn.addEventListener('click', () => {
+    mobileMenu.classList.toggle('is-open');
+  });
+
+  // Script for scrolled header background
+  const header = document.getElementById('site-header');
+  function handleScroll() {
+    if (window.scrollY > 10) {
+      header.classList.add('is-scrolled');
+    } else {
+      header.classList.remove('is-scrolled');
+    }
   }
+  document.addEventListener('scroll', handleScroll, { passive: true });
 </script>
