@@ -4,6 +4,7 @@ import '../styles/global.css';
 import Header from '../components/Header.astro';
 import Footer from '../components/Footer.astro';
 import AgeGate from '../components/AgeGate.astro';
+import Signup from '../components/Signup.astro';
 ---
 <!DOCTYPE html>
 <html lang="en">
@@ -18,10 +19,15 @@ import AgeGate from '../components/AgeGate.astro';
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
   </head>
   <body class:list={{ homepage: Astro.url.pathname === '/' }}>
-    <AgeGate />  <Header />
+    <AgeGate />
+    <Header />
+
+    
     <main>
       <slot />
     </main>
+    
+    <Signup /> {/* 3. The Signup component is added before the Footer */}
     <Footer />
 
     <script 
@@ -32,5 +38,5 @@ import AgeGate from '../components/AgeGate.astro';
     <script type="text/javascript">
       !function(){if(!window.klaviyo){window._klOnsite=window._klOnsite||[];try{window.klaviyo=new Proxy({},{get:function(n,i){return"push"===i?function(){var n;(n=window._klOnsite).push.apply(n,arguments)}:function(){for(var n=arguments.length,o=new Array(n),w=0;w<n;w++)o[w]=arguments[w];var t="function"==typeof o[o.length-1]?o.pop():void 0,e=new Promise((function(n){window._klOnsite.push([i].concat(o,[function(i){t&&t(i),n(i)}]))}));return e}}})}catch(n){window.klaviyo=window.klaviyo||[],window.klaviyo.push=function(){var n;(n=window._klOnsite).push.apply(n,arguments)}}}}(); 
     </script>
-    </body>
+  </body>
 </html>

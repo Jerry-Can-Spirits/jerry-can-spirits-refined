@@ -1,19 +1,234 @@
 ---
+// src/pages/products.astro
 import MainLayout from '../layouts/MainLayout.astro';
 ---
-<MainLayout title="Products | Jerry Can Spirits" description="Our inaugural lineup of spirits.">
-  <div class="page-container">
-    <h1>Products</h1>
-    <p>Our full product lineup will be revealed here soon.</p>
+
+<MainLayout title="Our Products | Jerry Can Spirits" description="The inaugural lineup of Jerry Can Spirits.">
+  <div class="products-page">
+    <header class="page-header">
+      <h1>The Inaugural Lineup</h1>
+      <p>The first provisions from the Jerry Can Spirits armoury. Crafted with precision, built for adventure.</p>
+    </header>
+
+    <main class="products-grid">
+      <article class="product-card">
+        <div class="product-content">
+          <h2 class="product-name">Expedition Spiced</h2>
+          <p class="product-story">
+            Forged for the journey. Expedition Spiced is a bold, intrepid spirit crafted for those who find comfort in the wild. It’s a tribute to long nights under open skies and stories told around a fire. Not just a drink, but a provision for your next adventure.
+          </p>
+          <div class="tasting-notes">
+            <h3>Tasting Notes</h3>
+            <ul>
+              <li><strong>Nose:</strong> Aromatic smoke and a crack of black pepper.</li>
+              <li><strong>Palate:</strong> A robust, peppery warmth gives way to a smooth, surprising burst of clean citrus.</li>
+              <li><strong>Finish:</strong> A satisfying, warming finish with no harsh burn.</li>
+            </ul>
+          </div>
+          <button data-klaviyo-form-id="YwAbEQ" class="btn-notify">
+            Notify Me When Available
+          </button>
+        </div>
+      </article>
+
+      <article class="product-card">
+        <div class="product-content">
+          <h2 class="product-name">The Quartermaster's Reserve</h2>
+          <p class="product-story">
+            The essential standard. This is the backbone of any serious collection—a classic, rich dark rum engineered for versatility. Smooth enough to stand alone over ice, yet bold enough to command any classic cocktail. It’s the reliable old friend for the end of a long day.
+          </p>
+          <div class="tasting-notes">
+            <h3>Tasting Notes</h3>
+            <ul>
+              <li><strong>Nose:</strong> Rich molasses, dark chocolate, and a hint of oak.</li>
+              <li><strong>Palate:</strong> A smooth, full-bodied character with notes of dried fruit and vanilla.</li>
+              <li><strong>Finish:</strong> Clean, exceptionally smooth, and timeless.</li>
+            </ul>
+          </div>
+          <button data-klaviyo-form-id="VrCGHG" class="btn-notify">
+            Notify Me When Available
+          </button>
+        </div>
+      </article>
+    </main>
   </div>
 </MainLayout>
 
 <style>
-  .page-container {
-    min-height: 60vh;
-    max-width: 900px;
-    margin: 8rem auto 4rem;
-    padding: var(--page-padding);
+  .products-page {
+    padding-bottom: 6rem;
+  }
+  .page-header {
     text-align: center;
+    padding: 4rem var(--page-padding) 5rem;
+  }
+  .page-header h1 {
+    font-size: 3.5rem;
+    text-transform: uppercase;
+    color: var(--dark-olive);
+    margin-bottom: 1rem;
+  }
+  .page-header p {
+    font-size: 1.2rem;
+    color: var(--dark-olive);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+    gap: 2rem;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--page-padding);
+  }
+  .product-card {
+    border: 2px solid rgba(42, 47, 29, 0.2);
+    border-radius: 8px;
+    background-color: var(--parchment);
+    display: flex;
+  }
+  .product-content {
+    padding: 2.5rem;
+    display: flex;
+    flex-direction: column;
+  }
+  .product-name {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+  }
+  .product-story {
+    font-size: 1.1rem;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    flex-grow: 1;
+  }
+  .tasting-notes h3 {
+    font-size: 1.2rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    border-bottom: 1px solid var(--olive-drab);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+  }
+  .tasting-notes ul {
+    list-style: none;
+    padding: 0;
+    margin: 0 0 2rem 0;
+  }
+  .tasting-notes li {
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 0.5rem;
+  }
+  .btn-notify {
+    display: inline-block;
+    text-align: center;
+    background-color: var(--deep-green);
+    color: var(--parchment);
+    padding: 14px 24px;
+    text-decoration: none;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    border-radius: 4px;
+    transition: background-color 0.2s ease;
+    margin-top: auto;
+    cursor: pointer;
+    border: none;
+  }
+  .btn-notify:hover {
+    background-color: var(--dark-olive);
+  }
+
+  /* Modal Styles */
+  .notify-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(25, 30, 25, 0.95);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 10000;
+    backdrop-filter: blur(5px);
+  }
+  .notify-modal-content {
+    background-color: var(--parchment);
+    padding: 2.5rem;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 90%;
+    position: relative;
+  }
+  .notify-modal-close {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: var(--dark-olive);
+  }
+
+  @media (max-width: 480px) {
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
   }
 </style>
+
+<div id="notify-modal" class="notify-modal-overlay">
+  <div class="notify-modal-content">
+    <button id="notify-modal-close" class="notify-modal-close">&times;</button>
+    <div id="klaviyo-form-container"></div>
+  </div>
+</div>
+
+<script is:inline>
+  // No lang="ts" needed with this JSDoc approach
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const modalOverlay = document.getElementById('notify-modal');
+    const modalCloseBtn = document.getElementById('notify-modal-close');
+    const formContainer = document.getElementById('klaviyo-form-container');
+    const notifyButtons = document.querySelectorAll('.btn-notify');
+
+    if (!modalOverlay || !modalCloseBtn || !formContainer) {
+      console.error("Modal elements not found. Aborting script.");
+      return;
+    };
+
+    /**
+     * Opens the modal with a specific Klaviyo form.
+     * @param {string | null} klaviyoFormId The ID of the form to show.
+     */
+    function openModal(klaviyoFormId) {
+      if (!klaviyoFormId) return;
+      formContainer.innerHTML = `<div class="klaviyo-form-${klaviyoFormId}"></div>`;
+      modalOverlay.style.display = 'flex';
+    }
+
+    function closeModal() {
+      modalOverlay.style.display = 'none';
+      formContainer.innerHTML = '';
+    }
+
+    notifyButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const formId = button.getAttribute('data-klaviyo-form-id');
+        openModal(formId);
+      });
+    });
+
+    modalCloseBtn.addEventListener('click', closeModal);
+    modalOverlay.addEventListener('click', (event) => {
+      if (event.target === modalOverlay) {
+        closeModal();
+      }
+    });
+  });
+</script>

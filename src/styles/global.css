@@ -29,3 +29,13 @@ h1, h2, h3 {
   margin: 0;
   color: var(--deep-green); /* New heading color */
 }
+
+/* Add top padding to the main content on all pages */
+main {
+  padding-top: 120px; /* Adjust this to your header's height */
+}
+
+/* REMOVE the top padding ONLY on the homepage */
+body.homepage main {
+  padding-top: 0;
+}

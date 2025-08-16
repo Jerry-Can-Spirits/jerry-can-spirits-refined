@@ -1,0 +1,144 @@
+---
+// src/pages/ethos.astro
+import MainLayout from '../layouts/MainLayout.astro';
+---
+
+<MainLayout title="Our Ethos | Jerry Can Spirits" description="The core principles that define our craft and our crew.">
+  <div class="ethos-page">
+    <header class="page-header">
+      <h1>The Jerry Can Ethos</h1>
+      <p>More than just a spirit; a standard. These are the principles that guide every decision we make, from sourcing our ingredients to serving our crew.</p>
+    </header>
+
+    <main class="ethos-content">
+      <section class="ethos-section">
+        <div class="ethos-image">
+          <img src="/ethos/copper-still.jpg" alt="A copper distillery still used for crafting spirits.">
+        </div>
+        <div class="ethos-text">
+          <h2>Uncompromising Craft</h2>
+          <p>Every batch is crafted with military precision. We partner with expert distillers and use only the finest British ingredients. No shortcuts, no compromises. Just the relentless pursuit of perfection in every drop.</p>
+        </div>
+      </section>
+
+      <section class="ethos-section reverse">
+        <div class="ethos-image">
+          <img src="/ethos/countryside.jpg" alt="A dramatic view of the rolling British countryside.">
+        </div>
+        <div class="ethos-text">
+          <h2>Proudly British</h2>
+          <p>Our spirit is born from the British landscape and its legacy of resilience. By sourcing our ingredients locally, we not only capture an authentic taste of home but also support the producers and communities that make our craft possible.</p>
+        </div>
+      </section>
+
+      <section class="ethos-section">
+        <div class="ethos-image">
+          <img src="/ethos/adventurous-spirit.jpg" alt="A person looking out over a misty mountain range with a map.">
+        </div>
+        <div class="ethos-text">
+          <h2>An Adventurous Spirit</h2>
+          <p>Our name is a nod to the legacy of the jerry can—a symbol of resourcefulness and durability. We carry that same spirit of adventure and perseverance into every bottle, honouring a legacy of exploration and shared experience.</p>
+        </div>
+      </section>
+
+      <section class="ethos-section reverse">
+        <div class="ethos-image">
+          <img src="/ethos/more-than-a-company.jpg" alt="A group of friends gathered around a campfire at dusk.">
+        </div>
+        <div class="ethos-text">
+          <h2>More Than a Company, We're a Crew</h2>
+          <p>Great spirits are meant to be shared. We're a UK-wide team building a community of insiders who value connection and transparency. This is a journey, and we're proud to have you with us for the expedition.</p>
+        </div>
+      </section>
+    </main>
+  </div>
+</MainLayout>
+
+<style>
+  .ethos-page {
+    /* Styles for the overall page wrapper */
+  }
+
+  .page-header {
+    text-align: center;
+    padding: 4rem var(--page-padding) 5rem;
+  }
+
+  .page-header h1 {
+    font-size: 3.5rem;
+    text-transform: uppercase;
+    color: var(--dark-olive);
+    margin-bottom: 1rem;
+  }
+
+  .page-header p {
+    font-size: 1.2rem;
+    color: var(--dark-olive);
+    max-width: 700px;
+    margin: 0 auto;
+    line-height: 1.7;
+  }
+
+  .ethos-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 0 var(--page-padding) 6rem;
+  }
+
+  .ethos-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 4rem;
+    align-items: center;
+    margin-bottom: 6rem;
+  }
+
+  .ethos-section.reverse {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .ethos-section.reverse .ethos-image {
+    grid-column: 2 / 3;
+    grid-row: 1 / 2;
+  }
+
+  .ethos-section.reverse .ethos-text {
+    grid-column: 1 / 2;
+    grid-row: 1 / 2;
+  }
+
+  .ethos-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+    object-fit: cover;
+  }
+
+  .ethos-text h2 {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    margin-bottom: 1.5rem;
+    border-bottom: 2px solid var(--olive-drab);
+    padding-bottom: 1rem;
+    display: inline-block;
+  }
+
+  .ethos-text p {
+    font-size: 1.1rem;
+    line-height: 1.8;
+  }
+
+  @media (max-width: 768px) {
+    .ethos-section,
+    .ethos-section.reverse {
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    
+    .ethos-section.reverse .ethos-image,
+    .ethos-section.reverse .ethos-text {
+      grid-column: auto;
+      grid-row: auto;
+    }
+  }
+</style>
