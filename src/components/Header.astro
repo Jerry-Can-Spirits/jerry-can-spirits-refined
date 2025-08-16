@@ -16,11 +16,9 @@ const { homepage } = Astro.props;
       </ul>
     </nav>
     <button id="mobile-menu-toggle" class="mobile-menu-toggle" aria-label="Open menu">
-      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <path d="M3 12H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M3 6H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        <path d="M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+      <span class="hamburger-box">
+        <span class="hamburger-inner"></span>
+      </span>
     </button>
   </div>
 
@@ -38,7 +36,6 @@ const { homepage } = Astro.props;
 </header>
 
 <style>
-  /* Header Styles */
   #site-header {
     position: fixed;
     top: 0;
@@ -62,103 +59,97 @@ const { homepage } = Astro.props;
   }
   .logo-image { height: 50px; }
 
-  /* Desktop Navigation */
+  .desktop-nav {
+    display: none; /* Mobile first: hidden by default */
+  }
   .desktop-nav ul {
-    list-style: none;
-    margin: 0;
-    padding: 0;
-    display: flex;
-    gap: 2rem;
+    list-style: none; margin: 0; padding: 0;
+    display: flex; gap: 2rem;
   }
   .desktop-nav a {
     text-decoration: none;
-    color: var(--deep-green);
     font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
+    color: var(--deep-green);
   }
-  .header-on-homepage .desktop-nav a {
+  .header-on-homepage:not(.is-scrolled) .desktop-nav a {
     color: var(--parchment); /* White text on homepage hero */
   }
-  #site-header.is-scrolled .desktop-nav a {
-    color: var(--deep-green); /* Dark text when scrolled */
-  }
 
-  /* Mobile Menu Button (Hamburger) */
   .mobile-menu-toggle {
-    display: none; /* Hidden on desktop */
-    background: none;
-    border: none;
-    cursor: pointer;
+    display: block; /* Mobile first: visible by default */
+    background: none; border: none; cursor: pointer;
     color: var(--deep-green);
+    padding: 10px;
+    z-index: 1001; /* Above the overlay */
   }
-  .header-on-homepage .mobile-menu-toggle {
+  .header-on-homepage:not(.is-scrolled) .mobile-menu-toggle {
     color: var(--parchment);
   }
-  #site-header.is-scrolled .mobile-menu-toggle {
-    color: var(--deep-green);
+  
+  /* Hamburger Icon Styles */
+  .hamburger-box { display: inline-block; position: relative; width: 24px; height: 18px; }
+  .hamburger-inner, .hamburger-inner::before, .hamburger-inner::after {
+    width: 24px; height: 2px; background-color: currentColor;
+    border-radius: 4px; position: absolute;
+    transition: transform .2s ease-in-out;
   }
+  .hamburger-inner { top: 50%; transform: translateY(-50%); }
+  .hamburger-inner::before, .hamburger-inner::after { content: ''; display: block; }
+  .hamburger-inner::before { top: -8px; }
+  .hamburger-inner::after { bottom: -8px; }
 
   /* Mobile Menu Overlay */
   .mobile-menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
+    position: fixed; top: 0; left: 0;
+    width: 100%; height: 100%;
     background-color: var(--parchment);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transform: translateY(-100%);
-    transition: transform 0.4s ease;
-    z-index: 999; /* Below the header itself */
+    display: flex; justify-content: center; align-items: center;
+    opacity: 0; visibility: hidden;
+    transition: opacity 0.4s ease, visibility 0.4s ease;
+    z-index: 999;
   }
   .mobile-menu-overlay.is-open {
-    transform: translateY(0);
+    opacity: 1; visibility: visible;
   }
-  .mobile-nav ul {
-    list-style: none;
-    padding: 0;
-    text-align: center;
-  }
-  .mobile-nav li {
-    margin-bottom: 2rem;
-  }
+  .mobile-nav ul { list-style: none; padding: 0; text-align: center; }
+  .mobile-nav li { margin-bottom: 2rem; }
   .mobile-nav a {
-    font-size: 2rem;
-    color: var(--deep-green);
-    text-decoration: none;
-    font-family: 'Oswald', sans-serif;
+    font-size: 2rem; color: var(--deep-green);
+    text-decoration: none; font-family: 'Oswald', sans-serif;
     text-transform: uppercase;
   }
 
-  /* Responsive Breakpoint */
-  @media (max-width: 768px) {
-    .desktop-nav {
-      display: none;
-    }
-    .mobile-menu-toggle {
-      display: block;
-    }
+  /* Desktop styles */
+  @media (min-width: 769px) {
+    .desktop-nav { display: block; }
+    .mobile-menu-toggle { display: none; }
   }
 </style>
 
 <script is:inline>
-  // Script for mobile menu toggle
   const toggleBtn = document.getElementById('mobile-menu-toggle');
   const mobileMenu = document.getElementById('mobile-menu-overlay');
-  toggleBtn.addEventListener('click', () => {
-    mobileMenu.classList.toggle('is-open');
-  });
+  
+  if (toggleBtn && mobileMenu) {
+    toggleBtn.addEventListener('click', () => {
+      mobileMenu.classList.toggle('is-open');
+    });
+  }
 
-  // Script for scrolled header background
   const header = document.getElementById('site-header');
-  function handleScroll() {
+  if (header) {
+    // Initial check in case page is already scrolled
     if (window.scrollY > 10) {
       header.classList.add('is-scrolled');
-    } else {
-      header.classList.remove('is-scrolled');
     }
+    // Listen for scroll events
+    document.addEventListener('scroll', () => {
+      if (window.scrollY > 10) {
+        header.classList.add('is-scrolled');
+      } else {
+        header.classList.remove('is-scrolled');
+      }
+    }, { passive: true });
   }
-  document.addEventListener('scroll', handleScroll, { passive: true });
 </script>
