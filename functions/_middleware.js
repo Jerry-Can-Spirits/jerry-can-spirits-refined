@@ -1,7 +1,5 @@
 // functions/_middleware.js - Enhanced Version with Rate Limiting & Analytics
 
-import crypto from 'crypto';
-
 export async function onRequest({ request, next, env }) {
   const url = new URL(request.url);
   
