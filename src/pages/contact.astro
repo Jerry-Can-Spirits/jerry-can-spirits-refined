@@ -1,21 +1,332 @@
 ---
+// src/pages/contact.astro
 import MainLayout from '../layouts/MainLayout.astro';
+
+const contactMethods = [
+  {
+    icon: 'email',
+    label: 'Email',
+    value: 'hello@jerrycanspirits.co.uk',
+    link: 'mailto:hello@jerrycanspirits.co.uk',
+    description: 'For general inquiries and customer support'
+  },
+  {
+    icon: 'partnership',
+    label: 'Partnerships',
+    value: 'partnerships@jerrycanspirits.co.uk',
+    link: 'mailto:partnerships@jerrycanspirits.co.uk',
+    description: 'For wholesale and business opportunities'
+  },
+  {
+    icon: 'press',
+    label: 'Press',
+    value: 'press@jerrycanspirits.co.uk',
+    link: 'mailto:press@jerrycanspirits.co.uk',
+    description: 'For media inquiries and press releases'
+  }
+];
 ---
-<MainLayout title="Contact Us | Jerry Can Spirits">
-  <div class="content-page">
-    <h1>Contact Us</h1>
-    <p>For inquiries, partnerships, or just to say hello, please reach out to us.</p>
-    <p><strong>Email:</strong> <a href="mailto:hello@jerrycanspirits.co.uk">hello@jerrycanspirits.co.uk</a></p>
+
+<MainLayout 
+  title="Contact Us" 
+  description="Get in touch with Jerry Can Spirits for inquiries, partnerships, or just to say hello"
+>
+  <div class="contact-page">
+    <header class="page-hero">
+      <div class="hero-content">
+        <span class="page-label">Get in Touch</span>
+        <h1 class="page-title">Contact Us</h1>
+        <p class="page-description">
+          For inquiries, partnerships, or just to say hello, we'd love to hear from you.
+        </p>
+      </div>
+    </header>
+
+    <main class="contact-content">
+      <div class="contact-methods">
+        {contactMethods.map(method => (
+          <div class="contact-card">
+            <div class="contact-icon">
+              {method.icon === 'email' && (
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="2" y="4" width="20" height="16" rx="2"/>
+                  <path d="m22 7-10 5L2 7"/>
+                </svg>
+              )}
+              {method.icon === 'partnership' && (
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/>
+                  <circle cx="9" cy="7" r="4"/>
+                  <path d="M22 21v-2a4 4 0 0 0-3-3.87M16 3.13a4 4 0 0 1 0 7.75"/>
+                </svg>
+              )}
+              {method.icon === 'press' && (
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M4 22h16a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H8l-6 6v14a2 2 0 0 0 2 2z"/>
+                  <path d="M14 2v6h6M3 15h18M3 19h18"/>
+                </svg>
+              )}
+            </div>
+            <h3 class="contact-label">{method.label}</h3>
+            <a href={method.link} class="contact-link">
+              {method.value}
+            </a>
+            <p class="contact-description">{method.description}</p>
+          </div>
+        ))}
+      </div>
+
+      <section class="contact-info">
+        <div class="info-card">
+          <h2>Visit Us</h2>
+          <p>
+            Jerry Can Spirits Ltd<br />
+            United Kingdom<br />
+            <small>Specific address coming soon</small>
+          </p>
+        </div>
+        
+        <div class="info-card">
+          <h2>Follow Us</h2>
+          <div class="social-links">
+            <a href="https://www.instagram.com/jerrycanspirits" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.85s-.011 3.585-.069 4.85c-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07s-3.585-.012-4.85-.07c-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.85s.012-3.584.07-4.85c.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.85-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948s.014 3.667.072 4.947c.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072s3.667-.014 4.947-.072c4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.947s-.014-3.667-.072-4.947c-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.689-.073-4.948-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4s1.791-4 4-4 4 1.79 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.441 1.441 1.441 1.441-.645 1.441-1.441-.645-1.44-1.441-1.44z"/>
+              </svg>
+            </a>
+            <a href="https://www.facebook.com/profile.php?id=61579347508647" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M9 8h-3v4h3v12h5v-12h3.642l.358-4h-4v-1.667c0-.955.192-1.333 1.115-1.333h2.885v-5h-3.808c-3.596 0-5.192 1.583-5.192 4.615v3.385z"/>
+              </svg>
+            </a>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <section class="contact-cta">
+      <h2>Stay Connected</h2>
+      <p>Join our expedition for exclusive updates and early access to new releases</p>
+      <a href="#signup" class="btn-primary">Become an Insider</a>
+    </section>
   </div>
 </MainLayout>
 
 <style>
-  .content-page {
-    max-width: 800px;
+  .contact-page {
+    min-height: 100vh;
+  }
+
+  /* Page Hero */
+  .page-hero {
+    padding: var(--space-4xl) var(--page-padding);
+    text-align: center;
+    background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
+    margin-top: var(--header-height);
+  }
+
+  @media (max-width: 768px) {
+    .page-hero {
+      margin-top: var(--header-height-mobile);
+      padding: var(--space-3xl) var(--page-padding);
+    }
+  }
+
+  .hero-content {
+    max-width: 600px;
     margin: 0 auto;
-    padding: 4rem var(--page-padding);
+  }
+
+  .page-label {
+    display: inline-block;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--theme-accent);
+    margin-bottom: var(--space-sm);
+    opacity: 0.8;
+  }
+
+  .page-title {
+    font-family: var(--font-family-heading);
+    font-size: clamp(2.5rem, 6vw, 3rem);
+    text-transform: uppercase;
+    color: var(--theme-text-primary);
+    margin: 0 0 var(--space-md) 0;
+  }
+
+  .page-description {
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    color: var(--theme-text-secondary);
+    line-height: var(--line-height-relaxed);
+  }
+
+  /* Contact Content */
+  .contact-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-4xl) var(--page-padding);
+  }
+
+  .contact-methods {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-xl);
+    margin-bottom: var(--space-4xl);
+  }
+
+  .contact-card {
+    text-align: center;
+    padding: var(--space-xl);
+    background: var(--theme-bg-tertiary);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--theme-border);
+    transition: transform var(--transition-base),
+                box-shadow var(--transition-base);
+  }
+
+  .contact-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+  }
+
+  .contact-icon {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 64px;
+    height: 64px;
+    margin: 0 auto var(--space-lg);
+    background: var(--theme-bg-secondary);
+    border-radius: var(--radius-full);
+    color: var(--theme-accent);
+  }
+
+  .contact-label {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    text-transform: uppercase;
+    margin: 0 0 var(--space-sm) 0;
+    color: var(--theme-text-primary);
+  }
+
+  .contact-link {
+    display: inline-block;
+    color: var(--theme-accent);
+    font-size: var(--font-size-base);
+    margin-bottom: var(--space-sm);
+    text-decoration: none;
+    transition: color var(--transition-fast);
+  }
+
+  .contact-link:hover {
+    color: var(--theme-accent-hover);
+    text-decoration: underline;
+  }
+
+  .contact-description {
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-muted);
+    margin: 0;
+  }
+
+  /* Info Cards */
+  .contact-info {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-xl);
+  }
+
+  .info-card {
+    padding: var(--space-xl);
+    background: var(--theme-bg-secondary);
+    border-radius: var(--radius-md);
     text-align: center;
   }
-  .content-page h1 { font-size: 3rem; margin-bottom: 1rem; }
-  .content-page p { font-size: 1.2rem; line-height: 1.8; }
+
+  .info-card h2 {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-xl);
+    margin: 0 0 var(--space-md) 0;
+    color: var(--theme-text-primary);
+  }
+
+  .social-links {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+  }
+
+  .social-links a {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    background: var(--theme-bg-primary);
+    border-radius: var(--radius-full);
+    color: var(--theme-accent);
+    transition: all var(--transition-fast);
+  }
+
+  .social-links a:hover {
+    background: var(--theme-accent);
+    color: white;
+    transform: scale(1.1);
+  }
+
+  /* CTA Section */
+  .contact-cta {
+    background: linear-gradient(135deg, var(--color-green-800) 0%, var(--color-green-900) 100%);
+    padding: var(--space-4xl) var(--page-padding);
+    text-align: center;
+    color: var(--color-parchment);
+  }
+
+  .contact-cta h2 {
+    font-family: var(--font-family-heading);
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    margin: 0 0 var(--space-md) 0;
+  }
+
+  .contact-cta p {
+    font-size: var(--font-size-lg);
+    opacity: 0.9;
+    margin-bottom: var(--space-xl);
+  }
+
+  .btn-primary {
+    display: inline-block;
+    padding: var(--space-md) var(--space-xl);
+    background: var(--color-green-500);
+    color: white;
+    text-decoration: none;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-base);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-fast);
+  }
+
+  .btn-primary:hover {
+    background: var(--color-green-400);
+    transform: translateY(-2px);
+  }
+
+  /* Mobile styles */
+  @media (max-width: 768px) {
+    .contact-content {
+      padding: var(--space-3xl) var(--space-md);
+    }
+
+    .contact-methods {
+      grid-template-columns: 1fr;
+    }
+
+    .contact-cta {
+      padding: var(--space-3xl) var(--space-md);
+    }
+  }
 </style>

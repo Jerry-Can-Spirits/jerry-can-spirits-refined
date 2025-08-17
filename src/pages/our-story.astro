@@ -1,19 +1,229 @@
 ---
 import MainLayout from '../layouts/MainLayout.astro';
+
+// We can structure the story in points, similar to the ethos page, for a consistent layout.
+const storyPoints = [
+  {
+    title: "The Signals Mission",
+    description: `My world used to be one of frequencies and encryption. As a soldier in the Royal Corps of Signals, the mission was to deliver crystal-clear communication in the most demanding environments on Earth. In that world, "close enough" was never an option. Every signal had to be perfect, every connection flawless. Our motto was <em>Certa Cito</em>—'Swift and Sure.' It wasn't just a phrase; it was the standard I lived by.`,
+    // Suggested Image: A subtle, atmospheric shot of a vintage map and a brass compass on a wooden table.
+    image: "/images/story/story-mission.jpg", 
+    alt: "A vintage map and compass hinting at precision and planning"
+  },
+  {
+    title: "A New Distillation",
+    description: `When I left the service, I carried that ethos with me. The discipline, meticulous attention to detail, and calm focus under pressure are principles that stay with you. I found a new mission in the art of distillation, seeing a clear parallel between the precision of engineering a global communications link and the craft of creating a perfectly balanced spirit. Both are a blend of art and science; both demand a relentless pursuit of excellence.`,
+    // Suggested Image: A close-up, detailed shot of the founder's hands adjusting a valve on the copper still.
+    image: "/images/story/story-distillation.jpg",
+    alt: "Founder's hands making a precise adjustment on a copper distillery still",
+    reverse: true
+  },
+  {
+    title: "The Spirit of Adventure",
+    description: `That is the source of Jerry Can Spirits. It’s a rum forged from a veteran's experience and engineered with the lessons I learned in service. It’s a tribute to the iconic jerry can—a symbol of rugged reliability that travelled with us on every operation. But more than that, it’s a tribute to the spirit of resourcefulness and quiet confidence that gets any job done, whether that’s establishing a connection or crafting the spirit you’re holding today. This is the new standard for your next adventure.`,
+    // Suggested Image: The Jerry Can Spirits bottle pictured in an authentic adventure setting, like next to a campfire or on a coastal rock.
+    image: "/images/story/story-adventure.jpg",
+    alt: "Jerry Can Spirits bottle resting next to a campfire"
+  }
+];
 ---
-<MainLayout title="Our Story | Jerry Can Spirits" description="The story behind the can.">
-  <div class="page-container">
-    <h1>Our Story</h1>
-    <p>Content for this section is coming soon.</p>
+
+<MainLayout 
+  title="Our Story | Jerry Can Spirits" 
+  description="The story behind Jerry Can Spirits, from the Royal Signals to the distillery."
+>
+  <div class="story-page">
+    <header class="page-hero">
+      <div class="hero-content">
+        <span class="page-label">Our Source</span>
+        <h1 class="page-title">From Swift and Sure to a Perfect Pour</h1>
+        <p class="page-description">
+          Our story didn’t start in a distillery. It started in the Royal Corps of Signals, with a mission of absolute precision and a spirit of adventure.
+        </p>
+      </div>
+    </header>
+
+    <main class="story-content">
+      {storyPoints.map((point, index) => (
+        <section class={`story-section ${point.reverse ? 'reverse' : ''}`}>
+          <div class="story-image-wrapper">
+            <picture>
+              <img 
+                src={point.image} 
+                alt={point.alt}
+                loading="lazy"
+                width="600"
+                height="700"
+              />
+            </picture>
+            <div class="image-frame"></div>
+          </div>
+          <div class="story-text-wrapper">
+            <span class="section-number">0{index + 1}</span>
+            <h2 class="section-title">{point.title}</h2>
+            <div class="section-description" set:html={point.description} />
+          </div>
+        </section>
+      ))}
+    </main>
+
+    <section class="story-cta">
+      <div class="cta-content">
+        <h2>Ready to Join the Expedition?</h2>
+        <p>Our story continues with every bottle shared. Discover our uncompromising ethos and find your new standard.</p>
+        <div class="cta-buttons">
+          <a href="/ethos" class="btn btn-primary">Our Ethos</a>
+          <a href="/products" class="btn btn-secondary">Explore Our Rum</a>
+        </div>
+      </div>
+    </section>
   </div>
 </MainLayout>
 
 <style>
-  .page-container {
-    min-height: 60vh;
-    max-width: 900px;
-    margin: 8rem auto 4rem;
-    padding: var(--page-padding);
+  /* Using a similar structure to your ethos page for consistency */
+  .story-page {
+    overflow-x: hidden;
+  }
+
+  .page-hero {
     text-align: center;
+    padding: var(--space-4xl) var(--page-padding);
+    margin-top: var(--header-height);
+    background: var(--theme-bg-secondary);
+  }
+
+  .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .page-label {
+    display: block;
+    font-family: var(--font-family-heading);
+    color: var(--theme-accent);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    font-size: var(--font-size-sm);
+    margin-bottom: var(--space-md);
+  }
+
+  .page-title {
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    text-transform: uppercase;
+    line-height: 1.1;
+    margin-bottom: var(--space-lg);
+  }
+
+  .page-description {
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    color: var(--theme-text-secondary);
+    line-height: var(--line-height-relaxed);
+    max-width: 700px;
+    margin: 0 auto;
+  }
+
+  .story-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: var(--space-4xl) var(--page-padding);
+  }
+
+  .story-section {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(2rem, 5vw, 4rem);
+    align-items: center;
+    margin-bottom: var(--space-4xl);
+  }
+
+  .story-section.reverse {
+    direction: rtl;
+  }
+  .story-section.reverse > * {
+    direction: ltr;
+  }
+
+  .story-image-wrapper {
+    position: relative;
+  }
+
+  .story-image-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-md);
+    object-fit: cover;
+    aspect-ratio: 6/7;
+  }
+  
+  .image-frame {
+    position: absolute;
+    top: -15px;
+    left: 15px;
+    right: -15px;
+    bottom: 15px;
+    border: 2px solid var(--theme-accent);
+    opacity: 0.3;
+    z-index: -1;
+    border-radius: var(--radius-md);
+    transition: all 0.3s ease-in-out;
+  }
+
+  .story-section:hover .image-frame {
+      transform: translate(-5px, -5px);
+  }
+
+  .section-number {
+    display: block;
+    font-size: clamp(3rem, 5vw, 4rem);
+    font-family: var(--font-family-heading);
+    color: var(--theme-accent);
+    opacity: 0.1;
+    line-height: 1;
+    margin-bottom: -1rem;
+  }
+
+  .section-title {
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    text-transform: uppercase;
+    margin-bottom: var(--space-lg);
+  }
+
+  .section-description p {
+    line-height: var(--line-height-relaxed);
+    color: var(--theme-text-secondary);
+    margin-bottom: 1rem;
+    font-size: var(--font-size-lg);
+  }
+
+  /* CTA Section - Re-using from ethos for consistency */
+  .story-cta {
+    background: var(--theme-bg-secondary);
+    padding: var(--space-4xl) var(--page-padding);
+    text-align: center;
+  }
+
+  .cta-content { max-width: 600px; margin: 0 auto; }
+  .cta-content h2 { font-size: clamp(2rem, 4vw, 2.5rem); margin-bottom: var(--space-md); }
+  .cta-content p { font-size: var(--font-size-lg); color: var(--theme-text-secondary); margin-bottom: var(--space-xl); }
+  .cta-buttons { display: flex; gap: var(--space-md); justify-content: center; flex-wrap: wrap; }
+  .btn { display: inline-block; padding: var(--space-sm) var(--space-xl); font-family: var(--font-family-heading); text-transform: uppercase; letter-spacing: 0.05em; text-decoration: none; border-radius: var(--radius-sm); transition: all 0.2s ease; font-weight: var(--font-weight-bold); }
+  .btn-primary { background-color: var(--theme-accent); color: var(--theme-text-primary); border: 2px solid var(--theme-accent);}
+  .btn-primary:hover { background-color: transparent; color: var(--theme-accent); }
+  .btn-secondary { background-color: transparent; color: var(--theme-text-secondary); border: 2px solid var(--theme-text-secondary); }
+  .btn-secondary:hover { background-color: var(--theme-text-secondary); color: var(--theme-bg-primary); }
+
+  @media (max-width: 900px) {
+    .story-section {
+      grid-template-columns: 1fr;
+      text-align: center;
+    }
+    .story-section.reverse {
+      direction: ltr;
+    }
+    .story-text-wrapper {
+        margin-top: 2rem;
+    }
   }
 </style>

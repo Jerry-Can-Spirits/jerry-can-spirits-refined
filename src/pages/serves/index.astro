@@ -1,0 +1,232 @@
+---
+// src/pages/serves/index.astro
+import MainLayout from '../../layouts/MainLayout.astro';
+import CocktailCard from '../../components/CocktailCard.astro';
+// We will import the master recipe list from your central data file
+import { allRecipes } from './recipe-data';
+---
+
+<MainLayout 
+  title="Field Manual | Jerry Can Spirits" 
+  description="Cocktail recipes and serving suggestions for Jerry Can Spirits"
+>
+  <div class="serves-page">
+    <header class="page-hero">
+      <div class="hero-content">
+        <span class="page-label">Recipes & Serves</span>
+        <h1 class="page-title">The Field Manual</h1>
+        <p class="page-description">
+          Battle-tested recipes and serving suggestions for every expedition.
+          From classic cocktails to campfire creations.
+        </p>
+      </div>
+    </header>
+
+    <main class="serves-content">
+      <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">All Recipes</button>
+        <button class="filter-btn" data-filter="easy">Easy</button>
+        <button class="filter-btn" data-filter="medium">Medium</button>
+        <button class="filter-btn" data-filter="advanced">Advanced</button>
+      </div>
+
+      <div class="cocktail-grid">
+        {allRecipes.map(cocktail => (
+          <CocktailCard 
+            title={cocktail.name}
+            imgSrc={cocktail.image}
+            imgAlt={cocktail.imageAlt}
+            url={`/serves/${cocktail.slug}`}
+            description={cocktail.description}
+            difficulty={cocktail.difficulty}
+          />
+        ))}
+      </div>
+    </main>
+
+    <section class="serves-cta">
+      <div class="cta-content">
+        <h2>Share Your Creations</h2>
+        <p>Tag us @jerrycanspirits to be featured in our field reports</p>
+        <div class="social-buttons">
+          <a href="https://www.instagram.com/jerrycanspirits" target="_blank" rel="noopener noreferrer" class="social-btn">
+            Follow on Instagram
+          </a>
+        </div>
+      </div>
+    </section>
+  </div>
+</MainLayout>
+
+<style>
+  .serves-page {
+    min-height: 100vh;
+    background: var(--parchment);
+  }
+  .page-hero {
+    background: linear-gradient(135deg, var(--deep-green) 0%, var(--olive-drab) 100%);
+    padding: 6rem var(--page-padding) 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .page-hero::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('/textures/topographic.svg') center/cover;
+    opacity: 0.1;
+  }
+  .hero-content {
+    position: relative;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  .page-label {
+    display: inline-block;
+    background: rgba(255, 255, 255, 0.2);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 2rem;
+    font-size: 0.875rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 1rem;
+  }
+  .page-title {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: white;
+    text-transform: uppercase;
+    margin: 0 0 1rem 0;
+    letter-spacing: 0.02em;
+  }
+  .page-description {
+    font-size: 1.25rem;
+    color: rgba(255, 255, 255, 0.9);
+    line-height: 1.6;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .filter-bar {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 3rem var(--page-padding) 2rem;
+    flex-wrap: wrap;
+  }
+  .filter-btn {
+    background: white;
+    border: 2px solid var(--deep-green);
+    color: var(--deep-green);
+    padding: 0.75rem 1.5rem;
+    border-radius: 2rem;
+    font-family: 'Oswald', sans-serif;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 0.875rem;
+    font-weight: 500;
+  }
+  .filter-btn:hover {
+    background: var(--deep-green);
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  }
+  .filter-btn.active {
+    background: var(--deep-green);
+    color: white;
+  }
+  .cocktail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 2rem;
+    padding: 2rem var(--page-padding) 4rem;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+  .serves-cta {
+    background: var(--deep-green);
+    padding: 4rem var(--page-padding);
+    text-align: center;
+    margin-top: 4rem;
+  }
+  .cta-content h2 {
+    font-family: 'Oswald', sans-serif;
+    font-size: 2rem;
+    color: white;
+    text-transform: uppercase;
+    margin: 0 0 1rem 0;
+  }
+  .cta-content p {
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 1.125rem;
+    margin: 0 0 2rem 0;
+  }
+  .social-btn {
+    display: inline-block;
+    background: white;
+    color: var(--deep-green);
+    padding: 1rem 2rem;
+    border-radius: 2rem;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.3s ease;
+  }
+  .social-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2);
+  }
+  @media (max-width: 768px) {
+    .page-hero { padding: 4rem 1.5rem 3rem; }
+    .page-title { font-size: 2rem; }
+    .page-description { font-size: 1rem; }
+    .filter-bar { padding: 2rem 1rem 1rem; }
+    .filter-btn { padding: 0.5rem 1rem; font-size: 0.75rem; }
+    .cocktail-grid {
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      padding: 1rem;
+      gap: 1.5rem;
+    }
+  }
+  @media (max-width: 480px) {
+    .cocktail-grid { grid-template-columns: 1fr; }
+  }
+</style>
+
+<script is:inline>
+  document.addEventListener('DOMContentLoaded', () => {
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const cocktailCards = document.querySelectorAll('.cocktail-card');
+
+    if (filterButtons.length === 0 || cocktailCards.length === 0) return;
+
+    filterButtons.forEach(button => {
+      button.addEventListener('click', () => {
+        const filter = button.getAttribute('data-filter');
+        if (!filter) return;
+        
+        filterButtons.forEach(btn => btn.classList.remove('active'));
+        button.classList.add('active');
+        
+        cocktailCards.forEach(card => {
+          /** @type {HTMLElement} */
+          const cardElement = card;
+          const difficultyBadge = cardElement.querySelector('.difficulty-badge');
+          const difficulty = difficultyBadge ? difficultyBadge.textContent?.toLowerCase().trim() : null;
+
+          if (filter === 'all' || filter === difficulty) {
+            cardElement.style.display = 'block';
+          } else {
+            cardElement.style.display = 'none';
+          }
+        });
+      });
+    });
+  });
+</script>

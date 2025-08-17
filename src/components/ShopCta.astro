@@ -1,118 +1,461 @@
 ---
 // src/components/ShopCta.astro
+export interface Product {
+  href?: string;
+  image: string;
+  alt: string;
+  label: string;
+  available?: boolean;
+  badge?: string;
+}
+
+// Products data - could come from props or CMS
+const products: Product[] = [
+  {
+    href: "/products/rum",
+    image: "/product-rum.jpg",
+    alt: "Jerry Can Spirits Premium Rum",
+    label: "The Rum",
+    available: false,
+    badge: "Coming Soon"
+  },
+  {
+    image: "/product-coasters.jpg",
+    alt: "Jerry Can Spirits Hardware Collection",
+    label: "Hardware",
+    available: false,
+    badge: "Coming Soon"
+  },
+  {
+    image: "/product-merch.jpg",
+    alt: "Jerry Can Spirits Uniform Collection",
+    label: "The Uniform",
+    available: false,
+    badge: "Coming Soon"
+  }
+];
 ---
-<section class="shop-cta">
+
+<section class="shop-cta" id="shop">
   <div class="container">
-    <h2 class="section-title">The Standard Issue Kit</h2>
-    <div class="product-grid">
-      <a href="#" class="grid-item">
-        <img src="/product-rum.jpg" alt="Jerry Can Spirits Rum">
-        <div class="item-label">The Rum</div>
-      </a>
-
-      <div class="grid-item placeholder-item">
-        <img src="/product-coasters.jpg" alt="Coming Soon">
-        <div class="item-label">More Hardware Coming Soon</div>
-      </div>
-
-      <div class="grid-item placeholder-item">
-        <img src="/product-merch.jpg" alt="Coming Soon">
-        <div class="item-label">The Uniform Coming Soon</div>
-      </div>
+    <div class="section-header">
+      <span class="section-label">Shop</span>
+      <h2 class="section-title">The Standard Issue Kit</h2>
+      <p class="section-description">
+        Essential gear for the modern adventurer. Premium spirits and field-tested accessories.
+      </p>
     </div>
-    <a href="#" class="cta-button">Join The Expedition</a>
+    
+    <div class="product-grid">
+      {products.map((product, index) => (
+        <div class={`product-card ${!product.available ? 'coming-soon' : ''}`}>
+          {product.href && product.available ? (
+            <a href={product.href} class="product-link">
+              <div class="product-image-wrapper">
+                <picture>
+                  <source 
+                    media="(max-width: 768px)" 
+                    srcset={product.image.replace('.jpg', '-mobile.jpg')}
+                  />
+                  <img 
+                    src={product.image} 
+                    alt={product.alt}
+                    loading="lazy"
+                    class="product-image"
+                  />
+                </picture>
+                {product.badge && (
+                  <span class="product-badge">{product.badge}</span>
+                )}
+                <div class="product-overlay">
+                  <span class="overlay-text">View Product</span>
+                </div>
+              </div>
+              <div class="product-info">
+                <h3 class="product-title">{product.label}</h3>
+              </div>
+            </a>
+          ) : (
+            <div class="product-link disabled">
+              <div class="product-image-wrapper">
+                <picture>
+                  <source 
+                    media="(max-width: 768px)" 
+                    srcset={product.image.replace('.jpg', '-mobile.jpg')}
+                  />
+                  <img 
+                    src={product.image} 
+                    alt={product.alt}
+                    loading="lazy"
+                    class="product-image"
+                  />
+                </picture>
+                {product.badge && (
+                  <span class="product-badge">{product.badge}</span>
+                )}
+                <div class="coming-soon-overlay">
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <circle cx="12" cy="12" r="10"/>
+                    <polyline points="12 6 12 12 16 14"/>
+                  </svg>
+                  <span class="overlay-text">Coming Soon</span>
+                </div>
+              </div>
+              <div class="product-info">
+                <h3 class="product-title">{product.label}</h3>
+              </div>
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+    
+    <div class="cta-section">
+      <a href="#signup" class="cta-button primary">
+        <span>Join The Expedition</span>
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M5 12h14M12 5l7 7-7 7"/>
+        </svg>
+      </a>
+      <p class="cta-text">Be the first to know when products launch</p>
+    </div>
   </div>
 </section>
 
 <style>
   .shop-cta {
-    background-color: var(--charcoal);
-    padding: 6rem 2rem;
+    background: linear-gradient(135deg, var(--color-green-800) 0%, var(--color-green-900) 100%);
+    padding: var(--space-4xl) var(--page-padding);
     text-align: center;
+    position: relative;
+    overflow: hidden;
   }
+  
+  /* Decorative background pattern */
+  .shop-cta::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+      radial-gradient(circle at 20% 50%, rgba(107, 112, 92, 0.1) 0%, transparent 50%),
+      radial-gradient(circle at 80% 50%, rgba(107, 112, 92, 0.1) 0%, transparent 50%);
+    pointer-events: none;
+  }
+  
   .container {
-    max-width: 1200px;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    position: relative;
+  }
+  
+  /* Section header */
+  .section-header {
+    margin-bottom: var(--space-3xl);
+  }
+  
+  .section-label {
+    display: inline-block;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--color-green-400);
+    margin-bottom: var(--space-sm);
+  }
+  
+  .section-title {
+    font-family: var(--font-family-heading);
+    font-size: clamp(2rem, 5vw, 3rem);
+    text-transform: uppercase;
+    color: var(--color-parchment);
+    margin: 0 0 var(--space-md) 0;
+    line-height: 1.1;
+  }
+  
+  .section-description {
+    font-size: var(--font-size-lg);
+    color: var(--color-parchment);
+    opacity: 0.9;
+    max-width: 600px;
     margin: 0 auto;
   }
-  .section-title {
-    font-size: 3rem;
-    text-transform: uppercase;
-    color: var(--cream);
-    margin-bottom: 3rem;
-  }
+  
+  /* Product grid */
   .product-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 2rem;
-    margin-bottom: 4rem;
+    gap: var(--space-xl);
+    margin-bottom: var(--space-3xl);
   }
-  .grid-item {
-    background-color: var(--slate);
-    border-radius: 8px;
+  
+  /* Product card */
+  .product-card {
+    position: relative;
+    height: 100%;
+  }
+  
+  .product-link {
+    display: block;
+    background-color: var(--color-green-700);
+    border-radius: var(--radius-md);
     overflow: hidden;
     text-decoration: none;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    transition: transform var(--transition-base),
+                box-shadow var(--transition-base);
     border: 2px solid transparent;
+    height: 100%;
   }
-  .grid-item:hover {
+  
+  .product-link:not(.disabled):hover {
     transform: translateY(-5px);
-    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
-    border-color: var(--brass);
+    box-shadow: var(--shadow-xl);
+    border-color: var(--color-green-400);
   }
-  .grid-item img {
+  
+  .product-link.disabled {
+    cursor: not-allowed;
+    opacity: 0.7;
+  }
+  
+  /* Product image */
+  .product-image-wrapper {
+    position: relative;
+    aspect-ratio: 1;
+    overflow: hidden;
+    background-color: var(--color-green-900);
+  }
+  
+  .product-image {
     width: 100%;
-    height: auto;
-    aspect-ratio: 1 / 1;
+    height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform var(--transition-slow);
   }
-  .item-label {
-    color: var(--cream);
-    padding: 1.5rem;
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.5rem;
+  
+  .product-link:not(.disabled):hover .product-image {
+    transform: scale(1.05);
+  }
+  
+  .coming-soon .product-image {
+    filter: grayscale(100%) opacity(0.5);
+  }
+  
+  /* Product badge */
+  .product-badge {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    background-color: var(--color-green-500);
+    color: white;
+    padding: var(--space-xs) var(--space-sm);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-xs);
     text-transform: uppercase;
-    letter-spacing: 1px;
+    letter-spacing: 0.05em;
+    font-weight: var(--font-weight-bold);
   }
-
-  /* --- NEW STYLE FOR PLACEHOLDERS --- */
-  .placeholder-item {
-    opacity: 0.6; /* Fades the item out */
-    position: relative;
-    border: 2px dashed var(--slate);
+  
+  /* Product overlay */
+  .product-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: var(--space-lg);
+    opacity: 0;
+    transition: opacity var(--transition-base);
   }
-  .placeholder-item img {
-    filter: grayscale(100%); /* Makes the image black and white */
+  
+  .product-link:not(.disabled):hover .product-overlay {
+    opacity: 1;
   }
-  .placeholder-item:hover {
-    transform: none; /* Disables the hover effects */
-    box-shadow: none;
-    border-color: dashed var(--slate);
-    cursor: not-allowed;
+  
+  /* Coming soon overlay */
+  .coming-soon-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-md);
+    color: var(--color-parchment);
   }
-  /* --- END NEW STYLES --- */
-
+  
+  .coming-soon-overlay svg {
+    opacity: 0.7;
+  }
+  
+  .overlay-text {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-base);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+  }
+  
+  /* Product info */
+  .product-info {
+    padding: var(--space-lg);
+    text-align: center;
+  }
+  
+  .product-title {
+    font-family: var(--font-family-heading);
+    font-size: clamp(1.25rem, 2.5vw, 1.5rem);
+    text-transform: uppercase;
+    color: var(--color-parchment);
+    margin: 0;
+    letter-spacing: 0.05em;
+  }
+  
+  /* CTA section */
+  .cta-section {
+    margin-top: var(--space-2xl);
+  }
+  
   .cta-button {
-    display: inline-block;
-    background-color: var(--brass);
-    color: var(--charcoal);
-    padding: 1rem 3rem;
-    border-radius: 4px;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    background-color: var(--color-green-500);
+    color: var(--color-parchment);
+    padding: var(--space-md) var(--space-xl);
+    border-radius: var(--radius-sm);
     text-decoration: none;
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.5rem;
-    font-weight: 700;
+    font-family: var(--font-family-heading);
+    font-size: clamp(1.125rem, 2.5vw, 1.5rem);
+    font-weight: var(--font-weight-bold);
     text-transform: uppercase;
-    letter-spacing: 1px;
-    transition: background-color 0.2s ease, transform 0.2s ease;
+    letter-spacing: 0.05em;
+    transition: background-color var(--transition-fast),
+                transform var(--transition-fast);
   }
+  
   .cta-button:hover {
-    background-color: #B8922A; /* Darker Brass */
+    background-color: var(--color-green-400);
     transform: translateY(-2px);
   }
+  
+  .cta-button svg {
+    transition: transform var(--transition-fast);
+  }
+  
+  .cta-button:hover svg {
+    transform: translateX(4px);
+  }
+  
+  .cta-text {
+    margin-top: var(--space-md);
+    font-size: var(--font-size-sm);
+    color: var(--color-parchment);
+    opacity: 0.7;
+  }
+  
+  /* Tablet styles */
   @media (max-width: 900px) {
     .product-grid {
       grid-template-columns: 1fr;
+      max-width: 500px;
+      margin: 0 auto var(--space-3xl);
+    }
+  }
+  
+  /* Mobile styles */
+  @media (max-width: 768px) {
+    .shop-cta {
+      padding: var(--space-3xl) var(--space-md);
+    }
+    
+    .section-header {
+      margin-bottom: var(--space-2xl);
+    }
+    
+    .section-description {
+      font-size: var(--font-size-base);
+    }
+    
+    .product-grid {
+      gap: var(--space-lg);
+    }
+    
+    .product-info {
+      padding: var(--space-md);
+    }
+    
+    .product-title {
+      font-size: 1.125rem;
+    }
+    
+    .cta-button {
+      font-size: 1.125rem;
+      padding: var(--space-sm) var(--space-lg);
+    }
+    
+    /* Always show overlay text on mobile */
+    .product-overlay {
+      opacity: 1;
+      background: linear-gradient(to bottom, transparent 50%, rgba(0, 0, 0, 0.5) 100%);
+    }
+    
+    .overlay-text {
+      font-size: var(--font-size-sm);
+    }
+  }
+  
+  /* Small mobile */
+  @media (max-width: 480px) {
+    .shop-cta {
+      padding: var(--space-2xl) var(--space-sm);
+    }
+  }
+  
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .product-link,
+    .product-image,
+    .product-overlay,
+    .cta-button {
+      transition: none;
     }
   }
 </style>
+
+<script>
+  // Add intersection observer for entrance animations
+  document.addEventListener('DOMContentLoaded', () => {
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach((entry, index) => {
+        if (entry.isIntersecting) {
+          setTimeout(() => {
+            entry.target.classList.add('visible');
+          }, index * 100);
+        }
+      });
+    }, observerOptions);
+    
+    const productCards = document.querySelectorAll('.product-card');
+    productCards.forEach(card => {
+      observer.observe(card);
+    });
+  });
+</script>

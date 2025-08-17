@@ -1,14 +1,66 @@
 ---
+// src/pages/shipping-policy.astro
 import MainLayout from '../layouts/MainLayout.astro';
+
+const lastUpdated = "January 1, 2025";
 ---
-<MainLayout title="Shipping Policy | Jerry Can Spirits">
-  <div class="content-page">
-    <h1>Shipping Policy</h1>
-    <p>[Insert your shipping policy text here. You can use the template you have as a starting point.]</p>
+
+<MainLayout 
+  title="Shipping Policy" 
+  description="Jerry Can Spirits shipping information and delivery details"
+  noindex={true}
+>
+  <div class="legal-page">
+    <header class="legal-header">
+      <div class="container">
+        <h1>Shipping Policy</h1>
+        <p class="last-updated">Last updated: {lastUpdated}</p>
+      </div>
+    </header>
+
+    <main class="legal-content">
+      <div class="container">
+        <h2>UK Shipping</h2>
+        <p>
+          We currently ship throughout the United Kingdom. All orders are dispatched within 
+          2-3 business days and typically arrive within 5-7 business days.
+        </p>
+        
+        <h3>Shipping Rates</h3>
+        <ul>
+          <li>Standard Shipping (5-7 business days): £5.95</li>
+          <li>Express Shipping (2-3 business days): £12.95</li>
+          <li>Free shipping on orders over £75</li>
+        </ul>
+
+        <h2>Age Verification</h2>
+        <p>
+          All deliveries require age verification upon receipt. The recipient must be 18 years 
+          or older and present valid ID to the courier.
+        </p>
+
+        <h2>International Shipping</h2>
+        <p>
+          We currently do not ship internationally. We're working on expanding our delivery 
+          network - join our mailing list to be notified when we ship to your country.
+        </p>
+
+        <h2>Damaged or Lost Shipments</h2>
+        <p>
+          If your order arrives damaged or doesn't arrive at all, please contact us immediately 
+          at <a href="mailto:support@jerrycanspirits.co.uk">support@jerrycanspirits.co.uk</a> 
+          with your order number and photos of any damage.
+        </p>
+      </div>
+    </main>
+
+    <footer class="legal-footer">
+      <div class="container">
+        <p>Have questions about shipping?</p>
+        <a href="/contact" class="btn-secondary">Contact Us</a>
+      </div>
+    </footer>
   </div>
 </MainLayout>
-<style>
-  .content-page { max-width: 800px; margin: 0 auto; padding: 4rem var(--page-padding); }
-  .content-page h1 { font-size: 3rem; margin-bottom: 2rem; }
-  .content-page p { line-height: 1.8; }
-</style>
+
+<!-- Use same legal page styles from privacy policy -->

@@ -3,10 +3,22 @@
 import MainLayout from '../layouts/MainLayout.astro';
 import Hero from '../components/Hero.astro';
 import BrandStory from '../components/BrandStory.astro';
+import Features from '../components/Features.astro';
+import ShopCta from '../components/ShopCta.astro';
+import Signup from '../components/Signup.astro';
 ---
-<MainLayout>
-  <main>
-    <Hero />
-    <BrandStory />
-  </main>
+
+<MainLayout 
+  title="Jerry Can Spirits"
+  description="Premium British spirits engineered for adventure. Discover our collection of carefully crafted spirits designed for the modern adventurer."
+>
+  <Hero />
+  <BrandStory />
+  <Features />
+  <ShopCta />
+  <Signup />
 </MainLayout>
+
+<style>
+  /* No additional styles needed - components handle their own styling */
+</style>

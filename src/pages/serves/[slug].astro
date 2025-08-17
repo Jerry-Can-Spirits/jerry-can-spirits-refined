@@ -1,0 +1,24 @@
+---
+// src/pages/serves/[slug].astro
+import MainLayout from '../../layouts/MainLayout.astro';
+import RecipeLayout from '../../components/RecipeLayout.astro';
+import { allRecipes } from './recipe-data';
+
+export function getStaticPaths() {
+  return allRecipes.map((recipe) => {
+    return {
+      params: { slug: recipe.slug },
+      props: { recipe },
+    };
+  });
+}
+
+const { recipe } = Astro.props;
+---
+
+<MainLayout 
+  title={`${recipe.name} | Jerry Can Spirits`}
+  description={recipe.description}
+>
+  <RecipeLayout recipe={recipe} />
+</MainLayout>

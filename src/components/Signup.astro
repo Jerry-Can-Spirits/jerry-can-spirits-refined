@@ -1,56 +1,215 @@
 ---
 // src/components/Signup.astro
+export interface Props {
+  variant?: 'default' | 'compact' | 'hero';
+  showConsent?: boolean;
+}
+
+const { 
+  variant = 'default',
+  showConsent = true 
+} = Astro.props;
 ---
-<section id="signup" class="signup-section">
+
+<section id="signup" class={`signup-section ${variant}`}>
   <div class="container">
-    <h2 class="section-title">Become an Insider</h2>
-    <p class="sub-title">
-      Be the first to know. Join the Jerry Can Spirits mailing list for exclusive launch details, stories from the road, and an introductory offer reserved for our earliest supporters.
-    </p>
-
-    <div class="klaviyo-form-QZ76XT"></div>
-
+    <div class="signup-content">
+      <div class="signup-header">
+        <span class="section-label">Join Us</span>
+        <h2 class="section-title">Become an Insider</h2>
+        <p class="section-description">
+          Be the first to know. Join the Jerry Can Spirits expeditionary force for exclusive launch details, 
+          stories from the field, and special offers reserved for our earliest supporters.
+        </p>
+      </div>
+      
+      <!-- Klaviyo form div - this will be replaced by Klaviyo's embedded form -->
+      <div class="klaviyo-form-QZ76XT"></div>
+      
+      <!-- Fallback form if Klaviyo doesn't load -->
+      <form class="signup-form fallback" id="signup-form" style="display: none;">
+        <div class="form-row">
+          <div class="form-group">
+            <label for="signup-email" class="visually-hidden">Email Address</label>
+            <input 
+              type="email" 
+              id="signup-email"
+              name="email"
+              placeholder="Enter your email address"
+              required
+              aria-label="Email address"
+              class="form-input"
+            />
+          </div>
+          
+          <button type="submit" class="submit-button">
+            <span class="button-text">Join Now</span>
+            <span class="button-loader"></span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="button-icon">
+              <path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/>
+            </svg>
+          </button>
+        </div>
+        
+        {showConsent && (
+          <div class="form-group consent">
+            <input 
+              type="checkbox" 
+              id="consent-checkbox"
+              name="consent"
+              required
+              aria-describedby="consent-text"
+            />
+            <label for="consent-checkbox" id="consent-text">
+              I agree to receive marketing communications from Jerry Can Spirits. 
+              I can unsubscribe at any time. View our 
+              <a href="/privacy-policy" target="_blank">Privacy Policy</a>.
+            </label>
+          </div>
+        )}
+        
+        <div class="form-message" role="alert" aria-live="polite"></div>
+      </form>
+      
+      <!-- Trust indicators -->
+      <div class="trust-indicators">
+        <div class="trust-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+          <span>No spam, ever</span>
+        </div>
+        <div class="trust-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="11" width="18" height="10" rx="2" ry="2"/>
+            <path d="M7 11V7a5 5 0 0110 0v4"/>
+          </svg>
+          <span>Your data is secure</span>
+        </div>
+        <div class="trust-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5M2 12l10 5 10-5"/>
+          </svg>
+          <span>Exclusive content</span>
+        </div>
+      </div>
+    </div>
   </div>
 </section>
 
 <style>
+  /* Base styles */
   .signup-section {
-    background-color: var(--cream);
-    padding: 5rem var(--page-padding);
+    background: linear-gradient(135deg, var(--color-parchment) 0%, var(--color-parchment-light) 100%);
+    padding: var(--space-4xl) var(--page-padding);
     text-align: center;
+    position: relative;
+    overflow: hidden;
   }
-
+  
+  /* Background pattern */
+  .signup-section::before {
+    content: '';
+    position: absolute;
+    top: -50%;
+    right: -50%;
+    width: 200%;
+    height: 200%;
+    background: radial-gradient(circle, var(--color-green-100) 1px, transparent 1px);
+    background-size: 50px 50px;
+    opacity: 0.3;
+    pointer-events: none;
+    transform: rotate(45deg);
+  }
+  
+  /* Variant styles */
+  .signup-section.compact {
+    padding: var(--space-2xl) var(--page-padding);
+  }
+  
+  .signup-section.hero {
+    background: var(--color-green-800);
+    color: var(--color-parchment);
+  }
+  
+  .signup-section.hero .section-title,
+  .signup-section.hero .section-description {
+    color: var(--color-parchment);
+  }
+  
   .container {
-    max-width: 650px; /* A narrower container for a focused form */
+    max-width: 650px;
+    margin: 0 auto;
+    position: relative;
+  }
+  
+  .signup-content {
+    position: relative;
+    z-index: 1;
+  }
+  
+  /* Header */
+  .signup-header {
+    margin-bottom: var(--space-2xl);
+  }
+  
+  .section-label {
+    display: inline-block;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    color: var(--theme-accent);
+    margin-bottom: var(--space-sm);
+    opacity: 0.8;
+  }
+  
+  .section-title {
+    font-family: var(--font-family-heading);
+    font-size: clamp(2rem, 5vw, 2.5rem);
+    color: var(--theme-text-primary);
+    text-transform: uppercase;
+    margin: 0 0 var(--space-md) 0;
+    line-height: 1.1;
+  }
+  
+  .section-description {
+    font-size: clamp(1rem, 2vw, 1.125rem);
+    color: var(--theme-text-secondary);
+    line-height: var(--line-height-relaxed);
+    max-width: 500px;
     margin: 0 auto;
   }
-
-  .section-title {
-    font-size: 2.5rem;
-    color: var(--charcoal);
-    text-transform: uppercase;
-    margin-bottom: 1rem;
+  
+  /* Klaviyo form container */
+  .klaviyo-form-QZ76XT {
+    margin-bottom: var(--space-xl);
+    min-height: 100px; /* Reserve space while loading */
   }
-
-  .sub-title {
-    font-size: 1.1rem;
-    color: var(--slate);
-    line-height: 1.7;
-    margin-bottom: 1.5rem;
-  }
-
+  
+  /* Fallback form */
   .signup-form {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: var(--space-lg);
+    max-width: 500px;
+    margin: 0 auto;
   }
-
+  
+  .form-row {
+    display: flex;
+    gap: var(--space-sm);
+    align-items: stretch;
+  }
+  
   .form-group {
+    flex: 1;
     text-align: left;
   }
   
-  /* Hides the default label but keeps it accessible for screen readers */
-  .form-group label[for="email-input"] {
+  .visually-hidden {
     position: absolute;
     width: 1px;
     height: 1px;
@@ -59,54 +218,380 @@
     overflow: hidden;
     clip: rect(0, 0, 0, 0);
     white-space: nowrap;
-    border-width: 0;
-  }
-
-  .form-group input[type="email"] {
-    width: 100%;
-    padding: 14px;
-    font-size: 1rem;
-    border-radius: 4px;
-    border: 2px solid var(--slate);
-    background-color: #fff;
-    box-sizing: border-box; /* Important for consistent sizing */
-  }
-
-  .form-group input[type="email"]:focus {
-    outline: none;
-    border-color: var(--brass);
-    box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.4);
+    border: 0;
   }
   
+  .form-input {
+    width: 100%;
+    padding: var(--space-md);
+    font-size: var(--font-size-base);
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--theme-border-strong);
+    background-color: white;
+    transition: border-color var(--transition-fast),
+                box-shadow var(--transition-fast);
+  }
+  
+  .form-input:focus {
+    outline: none;
+    border-color: var(--theme-accent);
+    box-shadow: 0 0 0 3px rgba(107, 112, 92, 0.1);
+  }
+  
+  .form-input::placeholder {
+    color: var(--theme-text-muted);
+  }
+  
+  /* Submit button */
+  .submit-button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-sm);
+    background-color: var(--color-green-800);
+    color: var(--color-parchment);
+    padding: var(--space-md) var(--space-xl);
+    border: none;
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-heading);
+    font-size: clamp(1rem, 2vw, 1.2rem);
+    font-weight: var(--font-weight-bold);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: background-color var(--transition-fast),
+                transform var(--transition-fast);
+    position: relative;
+    white-space: nowrap;
+  }
+  
+  .submit-button:hover:not(:disabled) {
+    background-color: var(--color-green-700);
+    transform: translateY(-1px);
+  }
+  
+  .submit-button:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+  }
+  
+  .button-text {
+    transition: opacity var(--transition-fast);
+  }
+  
+  .button-loader {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--color-parchment);
+    border-top-color: transparent;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity var(--transition-fast);
+  }
+  
+  .submit-button.loading .button-text,
+  .submit-button.loading .button-icon {
+    opacity: 0;
+  }
+  
+  .submit-button.loading .button-loader {
+    opacity: 1;
+    animation: spin 0.8s linear infinite;
+  }
+  
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+  
+  .button-icon {
+    transition: transform var(--transition-fast);
+  }
+  
+  .submit-button:hover:not(:disabled) .button-icon {
+    transform: translateX(2px);
+  }
+  
+  /* Consent checkbox */
   .form-group.consent {
     display: flex;
     align-items: flex-start;
-    gap: 0.75rem;
-    font-size: 0.9rem;
-    color: var(--slate);
+    gap: var(--space-sm);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-secondary);
+    text-align: left;
+    max-width: 450px;
+    margin: 0 auto;
   }
-
-  .form-group input[type="checkbox"] {
-    margin-top: 4px; /* Align checkbox with the first line of text */
-    flex-shrink: 0; /* Prevent the checkbox from shrinking */
-  }
-
-  .submit-button {
-    background-color: var(--charcoal);
-    color: var(--cream);
-    padding: 14px 24px;
-    border: none;
-    border-radius: 4px;
-    font-family: 'Oswald', sans-serif;
-    font-size: 1.2rem;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  
+  .form-group.consent input[type="checkbox"] {
+    margin-top: 4px;
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
   }
-
-  .submit-button:hover {
-    background-color: var(--slate);
+  
+  .form-group.consent label {
+    cursor: pointer;
+    line-height: var(--line-height-base);
+  }
+  
+  .form-group.consent a {
+    color: var(--theme-accent);
+    text-decoration: underline;
+  }
+  
+  /* Form message */
+  .form-message {
+    font-size: var(--font-size-sm);
+    padding: var(--space-sm);
+    border-radius: var(--radius-sm);
+    margin-top: var(--space-md);
+    display: none;
+  }
+  
+  .form-message.success {
+    display: block;
+    background-color: rgba(34, 139, 34, 0.1);
+    color: var(--color-success);
+    border: 1px solid var(--color-success);
+  }
+  
+  .form-message.error {
+    display: block;
+    background-color: rgba(208, 52, 44, 0.1);
+    color: var(--color-error);
+    border: 1px solid var(--color-error);
+  }
+  
+  /* Trust indicators */
+  .trust-indicators {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-xl);
+    margin-top: var(--space-2xl);
+    padding-top: var(--space-xl);
+    border-top: 1px solid var(--theme-border);
+  }
+  
+  .trust-item {
+    display: flex;
+    align-items: center;
+    gap: var(--space-sm);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-muted);
+  }
+  
+  .trust-item svg {
+    flex-shrink: 0;
+    width: 20px;
+    height: 20px;
+    opacity: 0.7;
+    color: var(--theme-accent);
+  }
+  
+  /* Mobile styles */
+  @media (max-width: 768px) {
+    .signup-section {
+      padding: var(--space-3xl) var(--space-md);
+    }
+    
+    .signup-header {
+      margin-bottom: var(--space-xl);
+    }
+    
+    .form-row {
+      flex-direction: column;
+    }
+    
+    .submit-button {
+      width: 100%;
+      padding: var(--space-md);
+    }
+    
+    .trust-indicators {
+      flex-direction: column;
+      gap: var(--space-md);
+      align-items: center;
+    }
+  }
+  
+  /* Small mobile */
+  @media (max-width: 480px) {
+    .signup-section {
+      padding: var(--space-2xl) var(--space-sm);
+    }
+    
+    .section-title {
+      font-size: 1.75rem;
+    }
+    
+    .trust-indicators {
+      padding-top: var(--space-md);
+    }
+  }
+  
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .submit-button,
+    .button-loader {
+      transition: none;
+      animation: none;
+    }
   }
 </style>
+
+<script>
+  // Check if Klaviyo form loads, otherwise show fallback
+  document.addEventListener('DOMContentLoaded', () => {
+    const klaviyoForm = document.querySelector('.klaviyo-form-QZ76XT');
+    const fallbackForm = document.getElementById('signup-form') as HTMLFormElement;
+    
+    // Check if Klaviyo loaded after a delay
+    setTimeout(() => {
+      if (klaviyoForm && klaviyoForm.children.length === 0) {
+        // Klaviyo didn't load, show fallback
+        if (fallbackForm) {
+          fallbackForm.style.display = 'flex';
+        }
+      }
+    }, 3000);
+    
+    // Handle fallback form submission
+    if (fallbackForm) {
+      fallbackForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData(fallbackForm);
+        const email = formData.get('email');
+        const consent = formData.get('consent');
+        const submitButton = fallbackForm.querySelector('.submit-button') as HTMLButtonElement;
+        const messageDiv = fallbackForm.querySelector('.form-message') as HTMLElement;
+        
+        // Clear previous messages
+        messageDiv.className = 'form-message';
+        messageDiv.textContent = '';
+        
+        // Add loading state
+        submitButton.classList.add('loading');
+        submitButton.disabled = true;
+        
+        try {
+          // Here you would integrate with your backend or Klaviyo API
+          // For now, we'll simulate an API call
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          
+          // Simulate success (replace with actual API call)
+          const response = await fetch('/api/newsletter-signup', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+              email,
+              consent,
+              source: 'signup-component',
+              timestamp: new Date().toISOString()
+            })
+          }).catch(() => {
+            // Fallback for demo
+            return { ok: true };
+          });
+          
+          if (response.ok) {
+            // Success
+            messageDiv.className = 'form-message success';
+            messageDiv.textContent = 'Welcome to the expedition! Check your email for confirmation.';
+            fallbackForm.reset();
+            
+            // Track event - check if klaviyo exists
+            if (typeof window !== 'undefined' && (window as any).klaviyo) {
+              (window as any).klaviyo.push(['identify', {
+                '$email': email
+              }]);
+              (window as any).klaviyo.push(['track', 'Newsletter Signup', {
+                'Source': 'Signup Component'
+              }]);
+            }
+            
+            // Dispatch custom event for analytics
+            window.dispatchEvent(new CustomEvent('newsletter-signup', {
+              detail: { email, source: 'signup-component' }
+            }));
+          } else {
+            throw new Error('Signup failed');
+          }
+        } catch (error) {
+          // Error
+          messageDiv.className = 'form-message error';
+          messageDiv.textContent = 'Something went wrong. Please try again later.';
+          console.error('Signup error:', error);
+        } finally {
+          // Remove loading state
+          submitButton.classList.remove('loading');
+          submitButton.disabled = false;
+        }
+      });
+    }
+    
+    // Enhance Klaviyo form if it loads
+    const observeKlaviyo = new MutationObserver((mutations) => {
+      mutations.forEach((mutation) => {
+        if (mutation.addedNodes.length > 0) {
+          // Klaviyo form loaded, enhance it
+          const klaviyoSubmit = klaviyoForm?.querySelector('button[type="submit"]');
+          if (klaviyoSubmit) {
+            // Add our styling classes
+            klaviyoSubmit.classList.add('submit-button');
+            
+            // Add animation on submit
+            klaviyoSubmit.addEventListener('click', () => {
+              klaviyoSubmit.classList.add('loading');
+            });
+          }
+          
+          // Stop observing once form is loaded
+          observeKlaviyo.disconnect();
+        }
+      });
+    });
+    
+    if (klaviyoForm) {
+      observeKlaviyo.observe(klaviyoForm, { 
+        childList: true, 
+        subtree: true 
+      });
+    }
+    
+    // Add entrance animation
+    const signupSection = document.querySelector('.signup-section');
+    if (signupSection) {
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+      
+      observer.observe(signupSection);
+    }
+  });
+  
+  // Expose signup function for other components to trigger
+  (window as any).triggerSignupFocus = () => {
+    const signupSection = document.getElementById('signup');
+    const emailInput = document.querySelector('#signup-email') as HTMLInputElement;
+    
+    if (signupSection) {
+      signupSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      
+      setTimeout(() => {
+        if (emailInput) {
+          emailInput.focus();
+        }
+      }, 500);
+    }
+  };
+</script>

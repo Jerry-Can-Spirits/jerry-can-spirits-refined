@@ -1,0 +1,122 @@
+---
+// src/pages/serves/toolkit.astro
+import MainLayout from '../../layouts/MainLayout.astro';
+import ToolkitCard from '../../components/ToolkitCard.astro';
+---
+
+<MainLayout title="The Toolkit | Jerry Can Spirits" description="A guide to essential glassware and bar tools.">
+  <div class="toolkit-page">
+    <header class="page-header">
+      <nav class="breadcrumb">
+        <a href="/serves">Field Manual</a>
+        <span>/</span>
+        <span>The Toolkit</span>
+      </nav>
+      <h1>The Toolkit</h1>
+      <p>The essential equipment for any mission. A guide to the glassware and tools required to execute our cocktail recipes with precision.</p>
+    </header>
+
+    <main class="toolkit-content">
+      <section class="toolkit-section">
+        <h2>Standard Issue Glassware</h2>
+        <div class="toolkit-grid">
+          <ToolkitCard 
+            name="Rocks Glass"
+            description="Also known as an Old Fashioned glass. Its wide brim and solid base are perfect for building cocktails directly in the glass and for drinks with large ice cubes."
+            imgSrc="/images/toolkit/rocks-glass.png"
+          />
+          <ToolkitCard 
+            name="Highball Glass"
+            description="A tall, slender glass for 'long' drinks, typically those mixed with a large amount of non-alcoholic mixer, like a Rum & Cola or a Collins."
+            imgSrc="/images/toolkit/highball-glass.png"
+          />
+          <ToolkitCard 
+            name="Coupe Glass"
+            description="An elegant, stemmed glass with a broad, shallow bowl. Ideal for cocktails served 'up' (without ice), such as sours and martinis."
+            imgSrc="/images/toolkit/coupe-glass.png"
+          />
+          <ToolkitCard 
+            name="Copper Mug"
+            description="The traditional vessel for any 'Mule' cocktail. The copper is not just for show; it keeps the drink exceptionally cold and enhances the tasting experience."
+            imgSrc="/images/toolkit/copper-mug.png"
+          />
+        </div>
+      </section>
+
+      <section class="toolkit-section">
+        <h2>Essential Bar Tools</h2>
+        <div class="toolkit-grid">
+          <ToolkitCard 
+            name="Cocktail Shaker"
+            description="Essential for chilling and diluting cocktails with citrus or other fresh juices. A Boston shaker (tin-on-tin or tin-on-glass) is the professional standard."
+            imgSrc="/images/toolkit/shaker.png"
+          />
+          <ToolkitCard 
+            name="Mixing Glass"
+            description="Used for stirring spirit-forward cocktails like the Old Fashioned or Negroni. Its heavy base provides stability while stirring."
+            imgSrc="/images/toolkit/mixing-glass.png"
+          />
+          <ToolkitCard 
+            name="Jigger"
+            description="A double-sided measuring tool for accurately pouring spirits and modifiers. Precision is key to a well-balanced cocktail."
+            imgSrc="/images/toolkit/jigger.png"
+          />
+          <ToolkitCard 
+            name="Strainer"
+            description="Used to separate ice and other solids from the liquid when pouring. A Hawthorne strainer is used with shakers, a Julep strainer with mixing glasses."
+            imgSrc="/images/toolkit/strainer.png"
+          />
+        </div>
+      </section>
+    </main>
+  </div>
+</MainLayout>
+
+<style>
+  .page-header {
+    text-align: center;
+    padding: 4rem var(--page-padding) 3rem;
+  }
+  .breadcrumb {
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+  }
+  .breadcrumb a {
+    color: var(--olive-drab);
+    text-decoration: none;
+  }
+  .breadcrumb a:hover {
+    text-decoration: underline;
+  }
+  .page-header h1 {
+    font-size: 3.5rem;
+    text-transform: uppercase;
+    color: var(--dark-olive);
+    margin-bottom: 1rem;
+  }
+  .page-header p {
+    font-size: 1.2rem;
+    color: var(--dark-olive);
+    max-width: 600px;
+    margin: 0 auto;
+  }
+  .toolkit-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 2rem var(--page-padding) 6rem;
+  }
+  .toolkit-section {
+    margin-bottom: 5rem;
+  }
+  .toolkit-section h2 {
+    font-size: 2.5rem;
+    text-transform: uppercase;
+    text-align: center;
+    margin-bottom: 3rem;
+  }
+  .toolkit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 2rem;
+  }
+</style>

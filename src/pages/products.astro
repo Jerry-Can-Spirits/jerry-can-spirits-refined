@@ -1,148 +1,451 @@
 ---
 // src/pages/products.astro
 import MainLayout from '../layouts/MainLayout.astro';
+
+const products = [
+  {
+    id: "expedition-spiced",
+    name: "Expedition Spiced",
+    tagline: "Forged for the journey",
+    story: "Expedition Spiced is a bold, intrepid spirit crafted for those who find comfort in the wild. It's a tribute to long nights under open skies and stories told around a fire. Not just a drink, but a provision for your next adventure.",
+    tastingNotes: [
+      { label: "Nose", description: "Aromatic smoke and a crack of black pepper" },
+      { label: "Palate", description: "A robust, peppery warmth gives way to a smooth, surprising burst of clean citrus" },
+      { label: "Finish", description: "A satisfying, warming finish with no harsh burn" }
+    ],
+    abv: "40%",
+    volume: "700ml",
+    klaviyoFormId: "YwAbEQ",
+    image: "/products/expedition-spiced.jpg",
+    available: false
+  },
+  {
+    id: "quartermasters-reserve",
+    name: "The Quartermaster's Reserve",
+    tagline: "The essential standard",
+    story: "This is the backbone of any serious collection—a classic, rich dark rum engineered for versatility. Smooth enough to stand alone over ice, yet bold enough to command any classic cocktail. It's the reliable old friend for the end of a long day.",
+    tastingNotes: [
+      { label: "Nose", description: "Rich molasses, dark chocolate, and a hint of oak" },
+      { label: "Palate", description: "A smooth, full-bodied character with notes of dried fruit and vanilla" },
+      { label: "Finish", description: "Clean, exceptionally smooth, and timeless" }
+    ],
+    abv: "42%",
+    volume: "700ml",
+    klaviyoFormId: "VrCGHG",
+    image: "/products/quartermasters-reserve.jpg",
+    available: false
+  }
+];
 ---
 
-<MainLayout title="Our Products | Jerry Can Spirits" description="The inaugural lineup of Jerry Can Spirits.">
+<MainLayout 
+  title="Our Products" 
+  description="The inaugural lineup of Jerry Can Spirits. Crafted with precision, built for adventure."
+>
   <div class="products-page">
-    <header class="page-header">
-      <h1>The Inaugural Lineup</h1>
-      <p>The first provisions from the Jerry Can Spirits armoury. Crafted with precision, built for adventure.</p>
+    <header class="page-hero">
+      <div class="hero-content">
+        <span class="page-label">Our Collection</span>
+        <h1 class="page-title">The Inaugural Lineup</h1>
+        <p class="page-description">
+          The first provisions from the Jerry Can Spirits armoury. 
+          Crafted with precision, built for adventure.
+        </p>
+      </div>
     </header>
 
-    <main class="products-grid">
-      <article class="product-card">
-        <div class="product-content">
-          <h2 class="product-name">Expedition Spiced</h2>
-          <p class="product-story">
-            Forged for the journey. Expedition Spiced is a bold, intrepid spirit crafted for those who find comfort in the wild. It’s a tribute to long nights under open skies and stories told around a fire. Not just a drink, but a provision for your next adventure.
-          </p>
-          <div class="tasting-notes">
-            <h3>Tasting Notes</h3>
-            <ul>
-              <li><strong>Nose:</strong> Aromatic smoke and a crack of black pepper.</li>
-              <li><strong>Palate:</strong> A robust, peppery warmth gives way to a smooth, surprising burst of clean citrus.</li>
-              <li><strong>Finish:</strong> A satisfying, warming finish with no harsh burn.</li>
-            </ul>
-          </div>
-          <button data-klaviyo-form-id="YwAbEQ" class="btn-notify">
-            Notify Me When Available
-          </button>
-        </div>
-      </article>
-
-      <article class="product-card">
-        <div class="product-content">
-          <h2 class="product-name">The Quartermaster's Reserve</h2>
-          <p class="product-story">
-            The essential standard. This is the backbone of any serious collection—a classic, rich dark rum engineered for versatility. Smooth enough to stand alone over ice, yet bold enough to command any classic cocktail. It’s the reliable old friend for the end of a long day.
-          </p>
-          <div class="tasting-notes">
-            <h3>Tasting Notes</h3>
-            <ul>
-              <li><strong>Nose:</strong> Rich molasses, dark chocolate, and a hint of oak.</li>
-              <li><strong>Palate:</strong> A smooth, full-bodied character with notes of dried fruit and vanilla.</li>
-              <li><strong>Finish:</strong> Clean, exceptionally smooth, and timeless.</li>
-            </ul>
-          </div>
-          <button data-klaviyo-form-id="VrCGHG" class="btn-notify">
-            Notify Me When Available
-          </button>
-        </div>
-      </article>
+    <main class="products-container">
+      <div class="products-grid">
+        {products.map((product, index) => (
+          <article class="product-card" data-product-id={product.id}>
+            <div class="product-image">
+              <picture>
+                <source 
+                  media="(max-width: 768px)" 
+                  srcset={product.image.replace('.jpg', '-mobile.jpg')}
+                />
+                <img 
+                  src={product.image} 
+                  alt={product.name}
+                  loading="lazy"
+                  width="400"
+                  height="500"
+                />
+              </picture>
+              {!product.available && (
+                <div class="availability-badge">Coming Soon</div>
+              )}
+            </div>
+            
+            <div class="product-content">
+              <div class="product-header">
+                <span class="product-number">N°{String(index + 1).padStart(2, '0')}</span>
+                <h2 class="product-name">{product.name}</h2>
+                <p class="product-tagline">{product.tagline}</p>
+              </div>
+              
+              <p class="product-story">{product.story}</p>
+              
+              <div class="product-specs">
+                <span class="spec">
+                  <strong>ABV:</strong> {product.abv}
+                </span>
+                <span class="spec">
+                  <strong>Volume:</strong> {product.volume}
+                </span>
+              </div>
+              
+              <div class="tasting-notes">
+                <h3 class="notes-title">Tasting Notes</h3>
+                <ul class="notes-list">
+                  {product.tastingNotes.map(note => (
+                    <li class="note-item">
+                      <strong class="note-label">{note.label}:</strong>
+                      <span class="note-description">{note.description}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              
+              <div class="product-actions">
+                {product.available ? (
+                  <button class="btn btn-primary">
+                    Add to Cart
+                  </button>
+                ) : (
+                  <button 
+                    class="btn btn-notify" 
+                    data-klaviyo-form-id={product.klaviyoFormId}
+                  >
+                    Notify Me When Available
+                  </button>
+                )}
+              </div>
+            </div>
+          </article>
+        ))}
+      </div>
     </main>
+
+    <section class="products-cta">
+      <div class="cta-content">
+        <h2>Can't Decide?</h2>
+        <p>Join our crew for expert recommendations and exclusive first access to new releases.</p>
+        <a href="#signup" class="btn btn-primary">Become an Insider</a>
+      </div>
+    </section>
+  </div>
+
+  <!-- Klaviyo Modal -->
+  <div id="notify-modal" class="notify-modal" aria-hidden="true" role="dialog">
+    <div class="modal-content">
+      <button 
+        id="modal-close" 
+        class="modal-close" 
+        aria-label="Close notification modal"
+      >
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      <div id="klaviyo-form-container"></div>
+    </div>
   </div>
 </MainLayout>
 
 <style>
   .products-page {
-    padding-bottom: 6rem;
+    overflow: hidden;
   }
-  .page-header {
+
+  /* Page Hero */
+  .page-hero {
+    padding: var(--space-4xl) var(--page-padding);
     text-align: center;
-    padding: 4rem var(--page-padding) 5rem;
+    background: linear-gradient(135deg, var(--theme-bg-primary) 0%, var(--theme-bg-secondary) 100%);
+    margin-top: var(--header-height);
+    position: relative;
   }
-  .page-header h1 {
-    font-size: 3.5rem;
+
+  @media (max-width: 768px) {
+    .page-hero {
+      margin-top: var(--header-height-mobile);
+      padding: var(--space-3xl) var(--page-padding);
+    }
+  }
+
+  .hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+    position: relative;
+    z-index: 1;
+  }
+
+  .page-label {
+    display: inline-block;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-sm);
     text-transform: uppercase;
-    color: var(--dark-olive);
-    margin-bottom: 1rem;
+    letter-spacing: 0.15em;
+    color: var(--theme-accent);
+    margin-bottom: var(--space-sm);
+    opacity: 0.8;
   }
-  .page-header p {
-    font-size: 1.2rem;
-    color: var(--dark-olive);
+
+  .page-title {
+    font-family: var(--font-family-heading);
+    font-size: clamp(2.5rem, 6vw, 3.5rem);
+    text-transform: uppercase;
+    color: var(--theme-text-primary);
+    margin: 0 0 var(--space-lg) 0;
+    line-height: 1.1;
+  }
+
+  .page-description {
+    font-size: clamp(1.1rem, 2vw, 1.25rem);
+    color: var(--theme-text-secondary);
+    line-height: var(--line-height-relaxed);
     max-width: 600px;
     margin: 0 auto;
   }
-  .products-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
-    gap: 2rem;
+
+  /* Products Container */
+  .products-container {
     max-width: var(--max-width);
     margin: 0 auto;
-    padding: 0 var(--page-padding);
+    padding: var(--space-4xl) var(--page-padding);
   }
+
+  .products-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(500px, 1fr));
+    gap: var(--space-2xl);
+  }
+
+  /* Product Card */
   .product-card {
-    border: 2px solid rgba(42, 47, 29, 0.2);
-    border-radius: 8px;
-    background-color: var(--parchment);
-    display: flex;
-  }
-  .product-content {
-    padding: 2.5rem;
+    background: var(--theme-bg-tertiary);
+    border: 2px solid var(--theme-border-strong);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
     display: flex;
     flex-direction: column;
+    transition: transform var(--transition-base),
+                box-shadow var(--transition-base);
   }
-  .product-name {
-    font-size: 2.5rem;
+
+  .product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+  }
+
+  /* Product Image */
+  .product-image {
+    position: relative;
+    aspect-ratio: 4/5;
+    background: linear-gradient(135deg, var(--theme-bg-secondary) 0%, var(--theme-bg-primary) 100%);
+    overflow: hidden;
+  }
+
+  .product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform var(--transition-slow);
+  }
+
+  .product-card:hover .product-image img {
+    transform: scale(1.05);
+  }
+
+  .availability-badge {
+    position: absolute;
+    top: var(--space-lg);
+    right: var(--space-lg);
+    background: var(--color-green-800);
+    color: var(--color-parchment);
+    padding: var(--space-sm) var(--space-md);
+    border-radius: var(--radius-sm);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-sm);
     text-transform: uppercase;
-    margin-bottom: 1rem;
+    letter-spacing: 0.05em;
+    font-weight: var(--font-weight-bold);
   }
-  .product-story {
-    font-size: 1.1rem;
-    line-height: 1.8;
-    margin-bottom: 2rem;
+
+  /* Product Content */
+  .product-content {
+    padding: var(--space-xl);
+    display: flex;
+    flex-direction: column;
     flex-grow: 1;
   }
-  .tasting-notes h3 {
-    font-size: 1.2rem;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    border-bottom: 1px solid var(--olive-drab);
-    padding-bottom: 0.5rem;
-    margin-bottom: 1rem;
+
+  .product-header {
+    margin-bottom: var(--space-lg);
   }
-  .tasting-notes ul {
+
+  .product-number {
+    display: inline-block;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-xs);
+    color: var(--theme-accent);
+    opacity: 0.6;
+    margin-bottom: var(--space-xs);
+  }
+
+  .product-name {
+    font-family: var(--font-family-heading);
+    font-size: clamp(2rem, 3vw, 2.5rem);
+    text-transform: uppercase;
+    color: var(--theme-text-primary);
+    margin: 0 0 var(--space-sm) 0;
+    line-height: 1.1;
+  }
+
+  .product-tagline {
+    font-size: var(--font-size-lg);
+    color: var(--theme-accent);
+    font-style: italic;
+    margin: 0;
+  }
+
+  .product-story {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--theme-text-secondary);
+    margin-bottom: var(--space-lg);
+    flex-grow: 1;
+  }
+
+  .product-specs {
+    display: flex;
+    gap: var(--space-lg);
+    margin-bottom: var(--space-lg);
+    padding-bottom: var(--space-lg);
+    border-bottom: 1px solid var(--theme-border);
+  }
+
+  .spec {
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-secondary);
+  }
+
+  .spec strong {
+    color: var(--theme-text-primary);
+  }
+
+  /* Tasting Notes */
+  .tasting-notes {
+    margin-bottom: var(--space-xl);
+  }
+
+  .notes-title {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--theme-text-primary);
+    margin: 0 0 var(--space-md) 0;
+    padding-bottom: var(--space-sm);
+    border-bottom: 2px solid var(--theme-accent);
+    display: inline-block;
+  }
+
+  .notes-list {
     list-style: none;
     padding: 0;
-    margin: 0 0 2rem 0;
+    margin: 0;
   }
-  .tasting-notes li {
-    font-size: 1rem;
-    line-height: 1.6;
-    margin-bottom: 0.5rem;
+
+  .note-item {
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-base);
+    margin-bottom: var(--space-sm);
+    color: var(--theme-text-secondary);
   }
-  .btn-notify {
-    display: inline-block;
-    text-align: center;
-    background-color: var(--deep-green);
-    color: var(--parchment);
-    padding: 14px 24px;
-    text-decoration: none;
-    font-family: 'Oswald', sans-serif;
-    text-transform: uppercase;
-    border-radius: 4px;
-    transition: background-color 0.2s ease;
+
+  .note-label {
+    color: var(--theme-text-primary);
+    font-weight: var(--font-weight-bold);
+  }
+
+  /* Product Actions */
+  .product-actions {
     margin-top: auto;
-    cursor: pointer;
-    border: none;
   }
+
+  .btn {
+    display: inline-block;
+    width: 100%;
+    text-align: center;
+    padding: var(--space-md);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-base);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: var(--font-weight-bold);
+    border: none;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: all var(--transition-fast);
+    text-decoration: none;
+  }
+
+  .btn-primary {
+    background-color: var(--color-green-800);
+    color: var(--color-parchment);
+  }
+
+  .btn-primary:hover {
+    background-color: var(--color-green-700);
+    transform: translateY(-2px);
+  }
+
+  .btn-notify {
+    background-color: var(--theme-accent);
+    color: white;
+  }
+
   .btn-notify:hover {
-    background-color: var(--dark-olive);
+    background-color: var(--color-green-600);
+    transform: translateY(-2px);
+  }
+
+  /* CTA Section */
+  .products-cta {
+    background: linear-gradient(135deg, var(--color-green-800) 0%, var(--color-green-900) 100%);
+    padding: var(--space-4xl) var(--page-padding);
+    text-align: center;
+  }
+
+  .cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .cta-content h2 {
+    font-family: var(--font-family-heading);
+    font-size: clamp(2rem, 4vw, 2.5rem);
+    color: var(--color-parchment);
+    margin-bottom: var(--space-md);
+  }
+
+  .cta-content p {
+    font-size: var(--font-size-lg);
+    color: var(--color-parchment);
+    opacity: 0.9;
+    margin-bottom: var(--space-xl);
+  }
+
+  .cta-content .btn {
+    display: inline-block;
+    width: auto;
+    padding: var(--space-md) var(--space-xl);
   }
 
   /* Modal Styles */
-  .notify-modal-overlay {
+  .notify-modal {
     position: fixed;
     top: 0;
     left: 0;
@@ -153,69 +456,181 @@ import MainLayout from '../layouts/MainLayout.astro';
     justify-content: center;
     align-items: center;
     z-index: 10000;
-    backdrop-filter: blur(5px);
-  }
-  .notify-modal-content {
-    background-color: var(--parchment);
-    padding: 2.5rem;
-    border-radius: 8px;
-    max-width: 500px;
-    width: 90%;
-    position: relative;
-  }
-  .notify-modal-close {
-    position: absolute;
-    top: 15px;
-    right: 15px;
-    background: none;
-    border: none;
-    font-size: 1.5rem;
-    cursor: pointer;
-    color: var(--dark-olive);
+    backdrop-filter: blur(10px);
+    padding: var(--space-lg);
+    opacity: 0;
+    transition: opacity var(--transition-base);
   }
 
-  @media (max-width: 480px) {
+  .notify-modal.open {
+    display: flex;
+    opacity: 1;
+  }
+
+  .modal-content {
+    background-color: var(--theme-bg-primary);
+    padding: var(--space-2xl);
+    border-radius: var(--radius-lg);
+    max-width: 500px;
+    width: 100%;
+    position: relative;
+    transform: scale(0.9);
+    transition: transform var(--transition-base);
+  }
+
+  .notify-modal.open .modal-content {
+    transform: scale(1);
+  }
+
+  .modal-close {
+    position: absolute;
+    top: var(--space-md);
+    right: var(--space-md);
+    background: none;
+    border: none;
+    color: var(--theme-text-primary);
+    cursor: pointer;
+    padding: var(--space-xs);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform var(--transition-fast);
+  }
+
+  .modal-close:hover {
+    transform: rotate(90deg);
+  }
+
+  /* Tablet styles */
+  @media (max-width: 900px) {
     .products-grid {
       grid-template-columns: 1fr;
+      max-width: 600px;
+      margin: 0 auto;
+    }
+  }
+
+  /* Mobile styles */
+  @media (max-width: 768px) {
+    .products-container {
+      padding: var(--space-3xl) var(--space-md);
+    }
+
+    .products-grid {
+      gap: var(--space-xl);
+    }
+
+    .product-content {
+      padding: var(--space-lg);
+    }
+
+    .product-name {
+      font-size: 1.75rem;
+    }
+
+    .product-specs {
+      flex-direction: column;
+      gap: var(--space-sm);
+    }
+
+    .products-cta {
+      padding: var(--space-3xl) var(--space-md);
+    }
+  }
+
+  /* Small mobile */
+  @media (max-width: 500px) {
+    .products-grid {
+      grid-template-columns: 1fr;
+    }
+
+    .products-container {
+      padding: var(--space-2xl) var(--space-sm);
+    }
+
+    .product-content {
+      padding: var(--space-md);
+    }
+  }
+
+  /* Animations */
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(30px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .product-card {
+    animation: fadeInUp 0.8s ease-out backwards;
+  }
+
+  .product-card:nth-child(2) {
+    animation-delay: 0.2s;
+  }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .product-card,
+    .product-image img,
+    .btn,
+    .modal-content,
+    .modal-close {
+      animation: none;
+      transition: none;
     }
   }
 </style>
 
-<div id="notify-modal" class="notify-modal-overlay">
-  <div class="notify-modal-content">
-    <button id="notify-modal-close" class="notify-modal-close">&times;</button>
-    <div id="klaviyo-form-container"></div>
-  </div>
-</div>
-
-<script is:inline>
-  // No lang="ts" needed with this JSDoc approach
-
+<script>
   document.addEventListener('DOMContentLoaded', () => {
-    const modalOverlay = document.getElementById('notify-modal');
-    const modalCloseBtn = document.getElementById('notify-modal-close');
+    const modal = document.getElementById('notify-modal');
+    const modalClose = document.getElementById('modal-close');
     const formContainer = document.getElementById('klaviyo-form-container');
     const notifyButtons = document.querySelectorAll('.btn-notify');
 
-    if (!modalOverlay || !modalCloseBtn || !formContainer) {
-      console.error("Modal elements not found. Aborting script.");
+    if (!modal || !modalClose || !formContainer) {
+      console.error("Modal elements not found");
       return;
-    };
+    }
 
-    /**
-     * Opens the modal with a specific Klaviyo form.
-     * @param {string | null} klaviyoFormId The ID of the form to show.
-     */
-    function openModal(klaviyoFormId) {
-      if (!klaviyoFormId) return;
+    function openModal(klaviyoFormId: string | null) {
+      if (!klaviyoFormId || !formContainer || !modal) return;
+      
+      // Set up Klaviyo form
       formContainer.innerHTML = `<div class="klaviyo-form-${klaviyoFormId}"></div>`;
-      modalOverlay.style.display = 'flex';
+      
+      // Open modal with animation
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      
+      // Reload Klaviyo forms if the script is loaded
+      if ((window as any).klaviyo) {
+        (window as any).klaviyo.load();
+      }
     }
 
     function closeModal() {
-      modalOverlay.style.display = 'none';
+      if (!modal) return;
+      
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      
+      // Clear form container after animation
+      if (formContainer) {
+        setTimeout(() => {
+          formContainer.innerHTML = '';
+        }, 300);
+      }
     }
 
+    // Add click handlers to notify buttons
     notifyButtons.forEach(button => {
       button.addEventListener('click', () => {
         const formId = button.getAttribute('data-klaviyo-form-id');
@@ -223,11 +638,39 @@ import MainLayout from '../layouts/MainLayout.astro';
       });
     });
 
-    modalCloseBtn.addEventListener('click', closeModal);
-    modalOverlay.addEventListener('click', (event) => {
-      if (event.target === modalOverlay) {
+    // Close modal handlers
+    modalClose.addEventListener('click', closeModal);
+    
+    modal.addEventListener('click', (event) => {
+      if (event.target === modal) {
         closeModal();
       }
+    });
+
+    // Close on Escape key
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape' && modal.classList.contains('open')) {
+        closeModal();
+      }
+    });
+
+    // Add intersection observer for animations
+    const observerOptions = {
+      threshold: 0.1,
+      rootMargin: '0px 0px -50px 0px'
+    };
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+        }
+      });
+    }, observerOptions);
+
+    const cards = document.querySelectorAll('.product-card');
+    cards.forEach(card => {
+      observer.observe(card);
     });
   });
 </script>

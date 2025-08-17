@@ -1,0 +1,273 @@
+---
+// src/components/RecipeLayout.astro
+import type { Recipe, Ingredient } from '../pages/serves/recipe-data'; // <-- UPDATED IMPORT
+const { recipe } = Astro.props;
+---
+
+<article class="recipe-page">
+  <header class="recipe-hero">
+    <div class="hero-image">
+      <picture>
+        <source 
+          media="(max-width: 768px)" 
+          srcset={recipe.image.replace('.jpg', '-mobile.jpg')}
+        />
+        <img 
+          src={recipe.image} 
+          alt={recipe.imageAlt} 
+          loading="eager"
+          width="800"
+          height="800"
+        />
+      </picture>
+    </div>
+    
+    <div class="hero-content">
+      <nav class="breadcrumb">
+        <a href="/serves">Field Manual</a>
+        <span>/</span>
+        <span>{recipe.name}</span>
+      </nav>
+      
+      <h1 class="recipe-name">{recipe.name}</h1>
+      <p class="recipe-tagline">{recipe.tagline}</p>
+      
+      <div class="recipe-meta">
+        <span class="meta-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+          {recipe.prepTime}
+        </span>
+        <span class="meta-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 10H3M21 6H3M21 14H3M17 18H3"/></svg>
+          {recipe.difficulty}
+        </span>
+        <span class="meta-item">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          {recipe.servings}
+        </span>
+      </div>
+    </div>
+  </header>
+
+  <main class="recipe-content">
+    <div class="recipe-grid">
+      <aside class="ingredients-section">
+        <h2>Ingredients</h2>
+        <p class="spirit-callout">
+          Made with <strong>{recipe.spirit}</strong>
+        </p>
+        <ul class="ingredients-list">
+          {/* --- TYPE ADDED BELOW --- */}
+          {recipe.ingredients.map((ingredient: Ingredient) => (
+            <li>
+              <span class="amount">{ingredient.amount}</span>
+              <span class="item">{ingredient.item}</span>
+              {ingredient.note && <span class="note">({ingredient.note})</span>}
+            </li>
+          ))}
+        </ul>
+        
+        <div class="glassware">
+          <h3>Glassware</h3>
+          <p>{recipe.glassware}</p>
+        </div>
+        
+        {recipe.garnish && (
+          <div class="garnish">
+            <h3>Garnish</h3>
+            <p>{recipe.garnish}</p>
+          </div>
+        )}
+      </aside>
+
+      <section class="instructions-section">
+        <h2>Method</h2>
+        <ol class="instructions-list">
+          {/* --- TYPES ADDED BELOW --- */}
+          {recipe.instructions.map((step: string, index: number) => (
+            <li>
+              <span class="step-number">{index + 1}</span>
+              <p class="step-text">{step}</p>
+            </li>
+          ))}
+        </ol>
+        
+        {recipe.tips && recipe.tips.length > 0 && (
+          <div class="tips-section">
+            <h3>Pro Tips</h3>
+            <ul class="tips-list">
+              {/* --- TYPE ADDED BELOW --- */}
+              {recipe.tips.map((tip: string) => <li>{tip}</li>)}
+            </ul>
+          </div>
+        )}
+      </section>
+    </div>
+  </main>
+
+  <footer class="recipe-footer">
+    <div class="navigation">
+      <a href="/serves" class="back-link">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+        Back to Field Manual
+      </a>
+    </div>
+  </footer>
+</article>
+
+<style>
+  /* Styles are unchanged */
+  .recipe-hero {
+    position: relative;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    min-height: 50vh;
+    background: var(--parchment);
+  }
+  .hero-image { position: relative; overflow: hidden; }
+  .hero-image img { width: 100%; height: 100%; object-fit: cover; }
+  .hero-content {
+    padding: 3rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+  }
+  .breadcrumb {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; color: var(--dark-olive);
+    margin-bottom: 1rem;
+  }
+  .breadcrumb a { color: var(--olive-drab); text-decoration: none; }
+  .breadcrumb a:hover { text-decoration: underline; }
+  .recipe-name {
+    font-family: 'Oswald', sans-serif;
+    font-size: clamp(2.5rem, 5vw, 3.5rem);
+    text-transform: uppercase; color: var(--deep-green);
+    margin: 0 0 0.5rem 0; line-height: 1.1;
+  }
+  .recipe-tagline {
+    font-size: 1.25rem; color: var(--dark-olive);
+    font-style: italic; margin: 0 0 2rem 0;
+  }
+  .recipe-meta { display: flex; gap: 1.5rem; flex-wrap: wrap; }
+  .meta-item {
+    display: flex; align-items: center; gap: 0.5rem;
+    font-size: 0.9rem; color: var(--dark-olive);
+  }
+  .meta-item svg { opacity: 0.7; }
+
+  /* Content Grid */
+  .recipe-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 4rem var(--page-padding);
+  }
+  .recipe-grid {
+    display: grid;
+    grid-template-columns: 300px 1fr;
+    gap: 3rem;
+  }
+
+  /* Ingredients Section */
+  .ingredients-section {
+    background: #fff;
+    border: 1px solid rgba(0,0,0,0.1);
+    padding: 1.5rem; border-radius: 8px;
+    height: fit-content;
+    position: sticky;
+    top: 120px; /* Adjust based on header height */
+  }
+  .ingredients-section h2 {
+    font-size: 1.5rem; text-transform: uppercase;
+    margin: 0 0 1rem 0; color: var(--deep-green);
+  }
+  .spirit-callout {
+    background: var(--parchment);
+    padding: 0.5rem 1rem;
+    border-radius: 4px; margin-bottom: 1rem;
+    font-size: 0.9rem;
+  }
+  .spirit-callout strong { color: var(--deep-green); }
+  .ingredients-list { list-style: none; padding: 0; margin: 0 0 1.5rem 0; }
+  .ingredients-list li {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 0.5rem;
+    padding: 0.75rem 0;
+    border-bottom: 1px solid rgba(0,0,0,0.08);
+  }
+  .ingredients-list li:last-child { border-bottom: none; }
+  .amount { font-weight: 700; color: var(--deep-green); }
+  .note {
+    grid-column: 2; font-size: 0.8rem;
+    color: var(--olive-drab); font-style: italic;
+  }
+  .glassware, .garnish { margin-bottom: 1rem; }
+  .glassware h3, .garnish h3 {
+    font-size: 1rem; text-transform: uppercase;
+    margin: 0 0 0.25rem 0;
+  }
+  .glassware p, .garnish p { margin: 0; }
+
+  /* Instructions Section */
+  .instructions-section h2 {
+    font-size: 1.5rem; text-transform: uppercase;
+    margin: 0 0 2rem 0;
+  }
+  .instructions-list {
+    list-style: none; padding: 0; margin: 0 0 2rem 0;
+  }
+  .instructions-list li {
+    display: flex;
+    gap: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+  .step-number {
+    flex-shrink: 0; width: 32px; height: 32px;
+    background: var(--deep-green); color: var(--parchment);
+    border-radius: 50%; display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-family: 'Oswald', sans-serif;
+  }
+  .step-text { line-height: 1.8; margin: 0; }
+  .tips-section {
+    background: var(--parchment); padding: 1.5rem;
+    border-radius: 8px; border-left: 4px solid var(--olive-drab);
+  }
+  .tips-section h3 {
+    font-size: 1.2rem; text-transform: uppercase;
+    margin: 0 0 1rem 0;
+  }
+  .tips-list { list-style: none; padding: 0; margin: 0; }
+  .tips-list li {
+    position: relative; padding-left: 1.5rem;
+    margin-bottom: 0.5rem;
+  }
+  .tips-list li::before {
+    content: "→"; position: absolute; left: 0;
+    color: var(--deep-green);
+  }
+
+  /* Footer */
+  .recipe-footer {
+    background: #fff;
+    border-top: 1px solid rgba(0,0,0,0.1);
+    padding: 2rem var(--page-padding);
+    max-width: var(--max-width);
+    margin: 0 auto;
+  }
+  .back-link {
+    display: inline-flex; align-items: center; gap: 0.5rem;
+    color: var(--deep-green); text-decoration: none;
+    font-weight: 700; transition: gap 0.2s ease;
+  }
+  .back-link:hover { gap: 0.75rem; }
+
+  /* Mobile Styles */
+  @media (max-width: 768px) {
+    .recipe-hero { grid-template-columns: 1fr; min-height: auto; }
+    .hero-image { order: 1; height: 40vh; }
+    .hero-content { order: 2; padding: 2rem; }
+    .recipe-grid { grid-template-columns: 1fr; }
+    .ingredients-section { position: static; top: auto; }
+  }
+</style>
