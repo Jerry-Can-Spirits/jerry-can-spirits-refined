@@ -1,22 +1,18 @@
 // functions/_middleware.js
 
-export async function onRequest(context) {
-  const { request, next } = context;
+// 1. UPDATE THE FUNCTION SIGNATURE to include 'env'
+export async function onRequest({ request, next, env }) {
   const url = new URL(request.url);
 
-  // 1. CHOOSE YOUR SECRET PASSWORD
-  // This can be any string you want.
-  const PREVIEW_SECRET = 'your_secret_password_here';
+  const PREVIEW_SECRET = 'JerryCanJoySept25';
 
-  // 2. CHECK IF THE VISITOR HAS THE PASSWORD IN THE URL
-  // e.g., https://jerrycanspirits.co.uk?preview=your_secret_password_here
   if (url.searchParams.get('preview') === PREVIEW_SECRET) {
-    // If the password is correct, let them see the real website.
+    // This part is correct and stays the same.
     return next();
   }
 
-  // 3. FOR EVERYONE ELSE, SHOW THE SPLASH PAGE
-  // This fetches the splash.html file we created and shows it to the user.
+  // 2. UPDATE THE FETCH METHOD to use Cloudflare's direct asset fetcher
+  // This fetches the splash page without re-triggering the middleware.
   const splashPageUrl = new URL('/splash.html', url.origin);
-  return fetch(splashPageUrl);
+  return env.ASSETS.fetch(splashPageUrl);
 }
