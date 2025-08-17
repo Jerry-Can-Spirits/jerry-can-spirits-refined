@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jerry Can Spirits - Coming Soon</title>
+  <style>
+    :root {
+      --deep-green: #2A2F1D;
+      --parchment: #F5F1E6;
+      --dark-olive: #3D4034;
+      --font-family-body: 'Roboto', sans-serif;
+      --font-family-heading: 'Oswald', sans-serif;
+    }
+    body {
+      margin: 0;
+      font-family: var(--font-family-body);
+      background-color: var(--deep-green);
+      color: var(--parchment);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      text-align: center;
+      background-image: url('/textures/topographic.svg'); /* Optional texture */
+      background-blend-mode: overlay;
+      background-size: cover;
+      opacity: 0.8;
+    }
+    .container {
+      padding: 2rem;
+    }
+    .logo {
+      max-width: 150px;
+      margin-bottom: 2rem;
+    }
+    h1 {
+      font-family: var(--font-family-heading);
+      font-size: clamp(2.5rem, 6vw, 4rem);
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      margin: 0 0 1rem 0;
+    }
+    p {
+      font-size: 1.25rem;
+      max-width: 500px;
+      line-height: 1.6;
+      margin: 0 auto 2rem;
+      opacity: 0.9;
+    }
+    .social-links a {
+      color: var(--parchment);
+      text-decoration: none;
+      margin: 0 1rem;
+      opacity: 0.7;
+      transition: opacity 0.3s ease;
+    }
+    .social-links a:hover {
+      opacity: 1;
+    }
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;700&family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="container">
+    <img src="/logo-primary.png" alt="Jerry Can Spirits Logo" class="logo">
+    <h1>Coming Soon</h1>
+    <p>We're busy crafting something special. Join the expedition by signing up to our mailing list for exclusive launch details.</p>
+    <p><em>(Newsletter signup form coming soon)</em></p>
+  </div>
+</body>
+</html>
