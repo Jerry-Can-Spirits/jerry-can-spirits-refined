@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Jerry Can Spirits - Admin Dashboard</title>
+  
+  <link rel="icon" type="image/png" href="/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --bg-primary: #0F172A;
+      --bg-secondary: #1E293B;
+      --bg-tertiary: #334155;
+      --text-primary: #F1F5F9;
+      --text-secondary: #CBD5E1;
+      --accent: #3B82F6;
+      --success: #10B981;
+      --warning: #F59E0B;
+      --danger: #EF4444;
+      --border: #334155;
+    }
+
+    body {
+      font-family: 'Inter', sans-serif;
+      background: var(--bg-primary);
+      color: var(--text-primary);
+      min-height: 100vh;
+    }
+
+    .header {
+      background: var(--bg-secondary);
+      border-bottom: 1px solid var(--border);
+      padding: 1.5rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+
+    .header .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 2rem;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .stat-card {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    .stat-card .label {
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card .value {
+      font-size: 2rem;
+      font-weight: 700;
+      margin-bottom: 0.5rem;
+    }
+
+    .stat-card .change {
+      font-size: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.25rem;
+    }
+
+    .stat-card .change.positive {
+      color: var(--success);
+    }
+
+    .stat-card .change.negative {
+      color: var(--danger);
+    }
+
+    .section {
+      background: var(--bg-secondary);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 1.5rem;
+    }
+
+    .section-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .filter-btn {
+      padding: 0.5rem 1rem;
+      background: var(--bg-tertiary);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      font-size: 0.875rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .filter-btn:hover {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .filter-btn.active {
+      background: var(--accent);
+      color: white;
+      border-color: var(--accent);
+    }
+
+    .activity-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .activity-table th {
+      text-align: left;
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      color: var(--text-secondary);
+      font-weight: 500;
+      font-size: 0.875rem;
+    }
+
+    .activity-table td {
+      padding: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      font-size: 0.875rem;
+    }
+
+    .activity-table tr:last-child td {
+      border-bottom: none;
+    }
+
+    .activity-table tr:hover {
+      background: var(--bg-tertiary);
+    }
+
+    .status-badge {
+      display: inline-block;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .status-badge.success {
+      background: rgba(16, 185, 129, 0.1);
+      color: var(--success);
+    }
+
+    .status-badge.failed {
+      background: rgba(239, 68, 68, 0.1);
+      color: var(--danger);
+    }
+
+    .status-badge.blocked {
+      background: rgba(245, 158, 11, 0.1);
+      color: var(--warning);
+    }
+
+    .ip-address {
+      font-family: monospace;
+      background: var(--bg-tertiary);
+      padding: 0.125rem 0.375rem;
+      border-radius: 4px;
+    }
+
+    .country-flag {
+      margin-right: 0.5rem;
+    }
+
+    .chart-container {
+      height: 300px;
+      position: relative;
+      margin-top: 1rem;
+    }
+
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 200px;
+      color: var(--text-secondary);
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid var(--border);
+      border-top-color: var(--accent);
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    .refresh-btn {
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 0.875rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      transition: opacity 0.2s;
+    }
+
+    .refresh-btn:hover {
+      opacity: 0.9;
+    }
+
+    .refresh-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        padding: 1rem;
+      }
+      
+      .stats-grid {
+        grid-template-columns: 1fr;
+      }
+      
+      .activity-table {
+        font-size: 0.75rem;
+      }
+      
+      .activity-table th,
+      .activity-table td {
+        padding: 0.5rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <h1>🔒 Preview Site Analytics</h1>
+    <span class="badge">Admin Dashboard</span>
+  </div>
+
+  <div class="container">
+    <!-- Stats Grid -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="label">Rate Limited IPs</div>
+        <div class="value" id="rateLimited">0</div>
+        <div class="change negative">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"/>
+          </svg>
+          <span id="limitedChange">0 active</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Activity Chart -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Activity Timeline</h2>
+        <div class="filter-buttons">
+          <button class="filter-btn active" data-range="24h">24 Hours</button>
+          <button class="filter-btn" data-range="7d">7 Days</button>
+          <button class="filter-btn" data-range="30d">30 Days</button>
+        </div>
+      </div>
+      <div class="chart-container">
+        <canvas id="activityChart"></canvas>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Recent Activity</h2>
+        <button class="refresh-btn" id="refreshBtn">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M4 2a1 1 0 011 1v2.101a7.002 7.002 0 0111.601 2.566 1 1 0 11-1.885.666A5.002 5.002 0 005.999 7H9a1 1 0 010 2H4a1 1 0 01-1-1V3a1 1 0 011-1zm.008 9.057a1 1 0 011.276.61A5.002 5.002 0 0014.001 13H11a1 1 0 110-2h5a1 1 0 011 1v5a1 1 0 11-2 0v-2.101a7.002 7.002 0 01-11.601-2.566 1 1 0 01.61-1.276z"/>
+          </svg>
+          Refresh
+        </button>
+      </div>
+      
+      <div id="activityTableContainer">
+        <table class="activity-table">
+          <thead>
+            <tr>
+              <th>Time</th>
+              <th>Event</th>
+              <th>Email/User</th>
+              <th>IP Address</th>
+              <th>Location</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="activityTableBody">
+            <tr>
+              <td colspan="6" class="loading">
+                <div class="spinner"></div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Top Countries -->
+    <div class="section">
+      <div class="section-header">
+        <h2 class="section-title">Access by Country</h2>
+      </div>
+      <div id="countriesContainer">
+        <div class="loading">
+          <div class="spinner"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Chart.js for visualizations -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  
+  <script>
+    // Mock data generator (replace with actual API calls)
+    function generateMockData() {
+      const events = ['auth_success', 'auth_failed', 'rate_limited', 'trusted_ip_access'];
+      const countries = ['US', 'GB', 'CA', 'AU', 'DE', 'FR', 'JP', 'IN'];
+      const emails = ['john@company.com', 'jane@company.com', 'admin@company.com', 'test@company.com'];
+      
+      const data = [];
+      const now = Date.now();
+      
+      for (let i = 0; i < 50; i++) {
+        const event = events[Math.floor(Math.random() * events.length)];
+        data.push({
+          timestamp: now - Math.random() * 7 * 24 * 60 * 60 * 1000,
+          event: event,
+          email: event === 'auth_success' ? emails[Math.floor(Math.random() * emails.length)] : 'unknown',
+          ip: `${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}.${Math.floor(Math.random() * 255)}`,
+          country: countries[Math.floor(Math.random() * countries.length)],
+          userAgent: 'Mozilla/5.0...'
+        });
+      }
+      
+      return data.sort((a, b) => b.timestamp - a.timestamp);
+    }
+
+    // Country flag emoji mapper
+    function getCountryFlag(code) {
+      const flags = {
+        'US': '🇺🇸', 'GB': '🇬🇧', 'CA': '🇨🇦', 'AU': '🇦🇺',
+        'DE': '🇩🇪', 'FR': '🇫🇷', 'JP': '🇯🇵', 'IN': '🇮🇳',
+        'CN': '🇨🇳', 'BR': '🇧🇷', 'MX': '🇲🇽', 'ES': '🇪🇸'
+      };
+      return flags[code] || '🌍';
+    }
+
+    // Format timestamp
+    function formatTime(timestamp) {
+      const date = new Date(timestamp);
+      const now = new Date();
+      const diff = now - date;
+      
+      if (diff < 60000) return 'Just now';
+      if (diff < 3600000) return `${Math.floor(diff / 60000)}m ago`;
+      if (diff < 86400000) return `${Math.floor(diff / 3600000)}h ago`;
+      
+      return date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+    }
+
+    // Update stats
+    function updateStats(data) {
+      const successCount = data.filter(d => d.event === 'auth_success').length;
+      const failedCount = data.filter(d => d.event === 'auth_failed').length;
+      const rateLimitedCount = data.filter(d => d.event === 'rate_limited').length;
+      const uniqueIPs = new Set(data.map(d => d.ip)).size;
+      
+      document.getElementById('totalAuth').textContent = successCount;
+      document.getElementById('failedAttempts').textContent = failedCount;
+      document.getElementById('uniqueVisitors').textContent = uniqueIPs;
+      document.getElementById('rateLimited').textContent = rateLimitedCount;
+      
+      // Calculate changes (mock)
+      document.getElementById('authChange').textContent = `+${Math.floor(Math.random() * 50)}% today`;
+      document.getElementById('failedChange').textContent = `+${Math.floor(Math.random() * 30)}% today`;
+      document.getElementById('visitorChange').textContent = `+${Math.floor(Math.random() * 40)}% this week`;
+      document.getElementById('limitedChange').textContent = `${Math.floor(Math.random() * 5)} active`;
+    }
+
+    // Update activity table
+    function updateActivityTable(data) {
+      const tbody = document.getElementById('activityTableBody');
+      tbody.innerHTML = '';
+      
+      data.slice(0, 20).forEach(item => {
+        const row = document.createElement('tr');
+        
+        let statusBadge = '';
+        let statusClass = '';
+        
+        switch(item.event) {
+          case 'auth_success':
+            statusBadge = 'Success';
+            statusClass = 'success';
+            break;
+          case 'auth_failed':
+            statusBadge = 'Failed';
+            statusClass = 'failed';
+            break;
+          case 'rate_limited':
+            statusBadge = 'Blocked';
+            statusClass = 'blocked';
+            break;
+          default:
+            statusBadge = 'Access';
+            statusClass = 'success';
+        }
+        
+        row.innerHTML = `
+          <td>${formatTime(item.timestamp)}</td>
+          <td>${item.event.replace(/_/g, ' ')}</td>
+          <td>${item.email}</td>
+          <td><span class="ip-address">${item.ip}</span></td>
+          <td><span class="country-flag">${getCountryFlag(item.country)}</span>${item.country}</td>
+          <td><span class="status-badge ${statusClass}">${statusBadge}</span></td>
+        `;
+        
+        tbody.appendChild(row);
+      });
+    }
+
+    // Initialize chart
+    let activityChart;
+    function initChart(data, range = '24h') {
+      const ctx = document.getElementById('activityChart').getContext('2d');
+      
+      // Process data for chart
+      const now = Date.now();
+      let rangeMs = 24 * 60 * 60 * 1000; // 24 hours
+      let groupBy = 60 * 60 * 1000; // 1 hour
+      
+      if (range === '7d') {
+        rangeMs = 7 * 24 * 60 * 60 * 1000;
+        groupBy = 24 * 60 * 60 * 1000; // 1 day
+      } else if (range === '30d') {
+        rangeMs = 30 * 24 * 60 * 60 * 1000;
+        groupBy = 24 * 60 * 60 * 1000; // 1 day
+      }
+      
+      const filteredData = data.filter(d => d.timestamp > now - rangeMs);
+      
+      // Group by time period
+      const groups = {};
+      filteredData.forEach(item => {
+        const key = Math.floor(item.timestamp / groupBy) * groupBy;
+        if (!groups[key]) {
+          groups[key] = { success: 0, failed: 0 };
+        }
+        if (item.event === 'auth_success') {
+          groups[key].success++;
+        } else if (item.event === 'auth_failed' || item.event === 'rate_limited') {
+          groups[key].failed++;
+        }
+      });
+      
+      const labels = Object.keys(groups).sort().map(ts => {
+        const date = new Date(parseInt(ts));
+        if (range === '24h') {
+          return date.getHours() + ':00';
+        } else {
+          return date.toLocaleDateString();
+        }
+      });
+      
+      const successData = Object.keys(groups).sort().map(ts => groups[ts].success);
+      const failedData = Object.keys(groups).sort().map(ts => groups[ts].failed);
+      
+      if (activityChart) {
+        activityChart.destroy();
+      }
+      
+      activityChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+          labels: labels,
+          datasets: [{
+            label: 'Successful',
+            data: successData,
+            borderColor: '#10B981',
+            backgroundColor: 'rgba(16, 185, 129, 0.1)',
+            tension: 0.4
+          }, {
+            label: 'Failed',
+            data: failedData,
+            borderColor: '#EF4444',
+            backgroundColor: 'rgba(239, 68, 68, 0.1)',
+            tension: 0.4
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              labels: {
+                color: '#CBD5E1'
+              }
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: '#334155'
+              },
+              ticks: {
+                color: '#CBD5E1'
+              }
+            },
+            y: {
+              grid: {
+                color: '#334155'
+              },
+              ticks: {
+                color: '#CBD5E1',
+                stepSize: 1
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Update countries
+    function updateCountries(data) {
+      const countryCounts = {};
+      data.forEach(item => {
+        countryCounts[item.country] = (countryCounts[item.country] || 0) + 1;
+      });
+      
+      const sorted = Object.entries(countryCounts)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, 10);
+      
+      const container = document.getElementById('countriesContainer');
+      container.innerHTML = sorted.map(([country, count]) => `
+        <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.75rem; border-bottom: 1px solid var(--border);">
+          <div>
+            <span class="country-flag">${getCountryFlag(country)}</span>
+            <span>${country}</span>
+          </div>
+          <div style="display: flex; align-items: center; gap: 1rem;">
+            <div style="width: 100px; height: 8px; background: var(--bg-tertiary); border-radius: 4px; overflow: hidden;">
+              <div style="width: ${(count / sorted[0][1]) * 100}%; height: 100%; background: var(--accent);"></div>
+            </div>
+            <span style="color: var(--text-secondary); font-size: 0.875rem;">${count}</span>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    // Initialize dashboard
+    function initDashboard() {
+      const data = generateMockData();
+      
+      updateStats(data);
+      updateActivityTable(data);
+      initChart(data);
+      updateCountries(data);
+    }
+
+    // Handle filter buttons
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        this.classList.add('active');
+        
+        const data = generateMockData();
+        initChart(data, this.dataset.range);
+      });
+    });
+
+    // Handle refresh button
+    document.getElementById('refreshBtn').addEventListener('click', function() {
+      this.disabled = true;
+      initDashboard();
+      setTimeout(() => {
+        this.disabled = false;
+      }, 1000);
+    });
+
+    // Auto-refresh every 30 seconds
+    setInterval(initDashboard, 30000);
+
+    // Initialize on load
+    initDashboard();
+
+    // Real API integration (commented out, replace mock data with this)
+    /*
+    async function fetchLogs() {
+      try {
+        const response = await fetch('/api/admin/logs', {
+          headers: {
+            'Authorization': 'Bearer ' + localStorage.getItem('admin_token')
+          }
+        });
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Failed to fetch logs:', error);
+        return [];
+      }
+    }
+    */
+  </script>
+</body>
+</html>-card">
+        <div class="label">Total Authentications</div>
+        <div class="value" id="totalAuth">0</div>
+        <div class="change positive">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/>
+          </svg>
+          <span id="authChange">+0% today</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="label">Failed Attempts</div>
+        <div class="value" id="failedAttempts">0</div>
+        <div class="change negative">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M14.707 10.293a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V5a1 1 0 012 0v7.586l2.293-2.293a1 1 0 011.414 0z"/>
+          </svg>
+          <span id="failedChange">+0% today</span>
+        </div>
+      </div>
+      
+      <div class="stat-card">
+        <div class="label">Unique Visitors</div>
+        <div class="value" id="uniqueVisitors">0</div>
+        <div class="change positive">
+          <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
+            <path fill-rule="evenodd" d="M5.293 9.707a1 1 0 010-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 01-1.414 1.414L11 7.414V15a1 1 0 11-2 0V7.414L6.707 9.707a1 1 0 01-1.414 0z"/>
+          </svg>
+          <span id="visitorChange">+0% this week</span>
+        </div>
+      </div>
+      
+      <div class="stat
