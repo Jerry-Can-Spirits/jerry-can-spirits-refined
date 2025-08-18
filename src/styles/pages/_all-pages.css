@@ -1,0 +1,13 @@
+/* ============================================
+   ALL PAGES AGGREGATOR
+   Imports all page-specific stylesheets
+   ============================================ */
+
+/* Page-specific styles */
+@import './_legal.css';
+@import './_products.css';
+@import './_serves.css';
+@import './_our-story.css';
+
+/* Homepage specific styles if needed */
+/* @import './_homepage.css'; */

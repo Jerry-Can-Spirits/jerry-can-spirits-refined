@@ -23,15 +23,21 @@ export async function onRequest({ request, next, env }) {
     
     // Content Security Policy - strict but functional
     const csp = [
-      "default-src 'self'",
+      "default-src 'none'",
       "script-src 'self' https://static.klaviyo.com https://cdnjs.cloudflare.com",
-      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "style-src 'self' https://fonts.googleapis.com",
       "font-src 'self' https://fonts.gstatic.com",
       "img-src 'self' data: https:",
-      "connect-src 'self'",
+      "connect-src 'self' https://a.klaviyo.com https://static.klaviyo.com",
       "frame-ancestors 'none'",
       "base-uri 'self'",
-      "form-action 'self'"
+      "form-action 'self' https://manage.kmail-lists.com",
+      "manifest-src 'self'",
+      "worker-src 'none'",
+      "object-src 'none'",
+      "media-src 'self'",
+      "child-src 'none'",
+      "frame-src 'none'"
     ].join('; ');
     
     newResponse.headers.set('Content-Security-Policy', csp);
@@ -370,14 +376,19 @@ export async function onRequest({ request, next, env }) {
           }, 
           TOKEN_SECRET
         );
-        
-        return new Response(null, { 
-          status: 302,
-          headers: {
-            'Location': redirectPath || '/',
-            'Set-Cookie': `preview_token=${token}; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Lax`
-          }
+
+        const response = new Response(JSON.stringify({
+            success: true,
+            redirect: redirectPath || '/'
+        }), {
+            status: 200,
+            headers: { 'Content-Type': 'application/json' }
         });
+
+response.headers.append('Set-Cookie', `preview_token=${token}; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Lax`);
+
+return response;
+        
       } else {
         // Invalid password
         await logAccess(env, 'auth_failed', { 

@@ -1,0 +1,231 @@
+/* ============================================
+   COCKTAIL CARD COMPONENT STYLES
+   From: src/components/CocktailCard.astro
+   ============================================ */
+
+.cocktail-card {
+    display: block;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    background-color: var(--theme-bg-primary);
+    box-shadow: var(--shadow-md);
+    transition: transform var(--transition-base), box-shadow var(--transition-base);
+    position: relative;
+    height: 100%;
+}
+
+.cocktail-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-xl);
+}
+
+.cocktail-card.featured {
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--theme-accent);
+}
+
+.card-link {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    text-decoration: none;
+    color: var(--theme-text-primary);
+}
+
+.card-image-wrapper {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 4/3;
+    background-color: var(--theme-bg-secondary);
+}
+
+.card-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform var(--transition-slow);
+}
+
+.cocktail-card:hover .card-image {
+    transform: scale(1.05);
+}
+
+.featured-badge,
+.difficulty-badge {
+    position: absolute;
+    padding: var(--space-xs) var(--space-sm);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-xs);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-weight: var(--font-weight-bold);
+    border-radius: var(--radius-sm);
+    z-index: 2;
+}
+
+.featured-badge {
+    top: var(--space-sm);
+    left: var(--space-sm);
+    background-color: var(--color-green-500);
+    color: white;
+}
+
+.difficulty-badge {
+    top: var(--space-sm);
+    right: var(--space-sm);
+    background-color: rgba(0, 0, 0, 0.7);
+    color: white;
+    backdrop-filter: blur(4px);
+}
+
+.difficulty-badge.easy {
+    background-color: rgba(34, 139, 34, 0.9);
+}
+
+.difficulty-badge.medium {
+    background-color: rgba(243, 156, 18, 0.9);
+}
+
+.difficulty-badge.advanced {
+    background-color: rgba(208, 52, 44, 0.9);
+}
+
+.image-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: linear-gradient(to bottom, transparent 0%, rgba(0, 0, 0, 0.7) 100%);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding: var(--space-lg);
+    opacity: 0;
+    transition: opacity var(--transition-base);
+}
+
+.cocktail-card:hover .image-overlay {
+    opacity: 1;
+}
+
+.view-recipe {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: white;
+    padding: var(--space-sm) var(--space-lg);
+    border: 2px solid white;
+    border-radius: var(--radius-sm);
+    transform: translateY(20px);
+    transition: transform var(--transition-base);
+}
+
+.cocktail-card:hover .view-recipe {
+    transform: translateY(0);
+}
+
+.card-content {
+    padding: var(--space-lg);
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.card-title {
+    font-family: var(--font-family-heading);
+    font-size: clamp(1.25rem, 3vw, 1.5rem);
+    text-transform: uppercase;
+    margin: 0 0 var(--space-sm) 0;
+    line-height: 1.2;
+    color: var(--theme-text-primary);
+}
+
+.card-description {
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-sm);
+    line-height: var(--line-height-base);
+    color: var(--theme-text-secondary);
+    margin: 0 0 var(--space-md) 0;
+    flex-grow: 1;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    line-clamp: 2; /* Standard property for compatibility */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.card-meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-xs);
+    font-size: var(--font-size-sm);
+    color: var(--theme-text-muted);
+    margin-top: auto;
+}
+
+.card-meta svg {
+    opacity: 0.7;
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .cocktail-card {
+        box-shadow: var(--shadow-sm);
+    }
+    
+    .card-content {
+        padding: var(--space-md);
+    }
+    
+    .card-title {
+        font-size: 1.25rem;
+    }
+    
+    .image-overlay {
+        opacity: 1;
+        background: linear-gradient(
+            to bottom,
+            transparent 50%,
+            rgba(0, 0, 0, 0.5) 100%
+        );
+        padding: var(--space-md);
+    }
+    
+    .view-recipe {
+        display: none;
+    }
+    
+    .difficulty-badge,
+    .featured-badge {
+        font-size: 0.625rem;
+        padding: var(--space-xxs) var(--space-xs);
+    }
+}
+
+/* Touch device optimization */
+@media (hover: none) {
+    .cocktail-card:hover {
+        transform: none;
+    }
+    
+    .cocktail-card:active {
+        transform: scale(0.98);
+    }
+    
+    .card-image {
+        transform: none !important;
+    }
+}
+
+/* Accessibility */
+@media (prefers-reduced-motion: reduce) {
+    .cocktail-card,
+    .card-image,
+    .image-overlay,
+    .view-recipe {
+        transition: none;
+    }
+}

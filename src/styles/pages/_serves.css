@@ -1,0 +1,191 @@
+/* ============================================
+   SERVES/RECIPES PAGE STYLES
+   From: src/pages/serves/index.astro
+   ============================================ */
+
+.serves-page {
+    min-height: 100vh;
+    background: var(--parchment);
+}
+
+.page-hero {
+    background: linear-gradient(135deg, var(--deep-green) 0%, var(--olive-drab) 100%);
+    padding: 6rem var(--page-padding) 4rem;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+}
+
+.hero-content {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.page-label {
+    display: inline-block;
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-green-400);
+    opacity: 0.8;
+    margin-bottom: var(--space-sm);
+}
+
+.page-title {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-4xl);
+    text-transform: uppercase;
+    color: var(--parchment);
+    margin: 0 0 var(--space-lg) 0;
+    letter-spacing: 0.05em;
+}
+
+.page-description {
+    font-size: var(--font-size-lg);
+    line-height: var(--line-height-relaxed);
+    color: var(--parchment);
+    opacity: 0.9;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.serves-content {
+    max-width: var(--max-width);
+    margin: 0 auto;
+}
+
+.filter-bar {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    padding: 2rem var(--page-padding);
+    background: white;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    flex-wrap: wrap;
+}
+
+.filter-btn {
+    padding: 0.5rem 1.5rem;
+    background: transparent;
+    border: 2px solid var(--deep-green);
+    color: var(--deep-green);
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    border-radius: var(--radius-sm);
+}
+
+.filter-btn:hover,
+.filter-btn.active {
+    background: var(--deep-green);
+    color: var(--parchment);
+}
+
+.cocktail-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 2rem;
+    max-width: var(--max-width);
+    margin: 0 auto;
+    padding: 3rem var(--page-padding);
+}
+
+.serves-cta {
+    background: var(--theme-bg-secondary);
+    padding: var(--space-4xl) var(--page-padding);
+    text-align: center;
+}
+
+.serves-cta .cta-content {
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.serves-cta h2 {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-3xl);
+    text-transform: uppercase;
+    color: var(--theme-text-primary);
+    margin-bottom: var(--space-md);
+}
+
+.serves-cta p {
+    font-size: var(--font-size-lg);
+    color: var(--theme-text-secondary);
+    margin-bottom: var(--space-xl);
+}
+
+.social-buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-md);
+    flex-wrap: wrap;
+}
+
+.social-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-sm);
+    padding: var(--space-sm) var(--space-xl);
+    background: var(--theme-accent);
+    color: white;
+    text-decoration: none;
+    font-family: var(--font-family-heading);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border-radius: var(--radius-sm);
+    transition: all 0.3s ease;
+    border: 2px solid var(--theme-accent);
+}
+
+.social-btn:hover {
+    background: transparent;
+    color: var(--theme-accent);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .page-hero {
+        padding: 4rem var(--space-md) 3rem;
+    }
+    
+    .page-title {
+        font-size: var(--font-size-3xl);
+    }
+    
+    .page-description {
+        font-size: var(--font-size-base);
+    }
+    
+    .filter-bar {
+        padding: 1.5rem var(--space-md);
+        gap: 0.5rem;
+    }
+    
+    .filter-btn {
+        padding: 0.4rem 1rem;
+        font-size: var(--font-size-xs);
+    }
+    
+    .cocktail-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+        padding: 2rem var(--space-md);
+    }
+    
+    .serves-cta {
+        padding: var(--space-3xl) var(--space-md);
+    }
+    
+    .serves-cta h2 {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .serves-cta p {
+        font-size: var(--font-size-base);
+    }
+}

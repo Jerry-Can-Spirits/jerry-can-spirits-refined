@@ -1,0 +1,22 @@
+/* ============================================
+   MAIN CSS ENTRY POINT
+   This is the master stylesheet that imports everything
+   Import this file in your Astro layouts
+   ============================================ */
+
+/* 1. Base styles and CSS variables/design system */
+@import './global.css';
+
+/* 2. Component styles */
+@import './components/_all-components.css';
+
+/* 3. Page-specific styles */
+@import './pages/_all-pages.css';
+
+/* 4. Any additional utility classes if needed */
+/* @import './utilities.css'; */
+
+/* 
+   Note: Make sure to remove all <style> tags from your .astro files
+   after implementing this CSS structure
+*/

@@ -1,0 +1,128 @@
+/* ============================================
+   LEGAL PAGES STYLES
+   For: Privacy Policy, Terms of Service, Cookie Policy, etc.
+   ============================================ */
+
+.legal-page-container {
+    max-width: 800px;
+    margin: 4rem auto;
+    padding: var(--page-padding);
+    line-height: 1.8;
+}
+
+.legal-page-container h1 {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-3xl);
+    text-transform: uppercase;
+    color: var(--theme-text-primary);
+    border-bottom: 2px solid var(--theme-border-strong);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.legal-page-container h2 {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-2xl);
+    color: var(--theme-text-primary);
+    border-bottom: 2px solid var(--theme-border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    margin-top: 2rem;
+}
+
+.legal-page-container h3 {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-xl);
+    color: var(--theme-text-primary);
+    border-bottom: 1px solid var(--theme-border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1rem;
+    margin-top: 1.5rem;
+}
+
+.legal-page-container h4 {
+    font-family: var(--font-family-heading);
+    font-size: var(--font-size-lg);
+    color: var(--theme-text-primary);
+    margin-bottom: 0.75rem;
+    margin-top: 1.25rem;
+}
+
+.legal-page-container p {
+    font-family: var(--font-family-body);
+    font-size: var(--font-size-base);
+    line-height: var(--line-height-relaxed);
+    color: var(--theme-text-secondary);
+    margin-bottom: var(--space-md);
+}
+
+.legal-page-container ul,
+.legal-page-container ol {
+    list-style-position: inside;
+    margin-bottom: var(--space-md);
+    color: var(--theme-text-secondary);
+}
+
+.legal-page-container ul li,
+.legal-page-container ol li {
+    margin-bottom: var(--space-sm);
+    line-height: var(--line-height-relaxed);
+}
+
+.legal-page-container strong {
+    color: var(--theme-text-primary);
+    font-weight: var(--font-weight-bold);
+}
+
+.legal-page-container a {
+    color: var(--theme-accent);
+    text-decoration: underline;
+    transition: color var(--transition-fast);
+}
+
+.legal-page-container a:hover {
+    color: var(--theme-accent-hover);
+}
+
+/* Alternative content page style (for simple pages like Returns Policy) */
+.content-page {
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 4rem var(--page-padding);
+}
+
+.content-page h1 {
+    font-family: var(--font-family-heading);
+    font-size: 3rem;
+    margin-bottom: 2rem;
+    color: var(--theme-text-primary);
+    text-transform: uppercase;
+}
+
+.content-page p {
+    line-height: 1.8;
+    color: var(--theme-text-secondary);
+    margin-bottom: var(--space-md);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+    .legal-page-container,
+    .content-page {
+        padding: 2rem var(--space-md);
+        margin: 2rem auto;
+    }
+    
+    .legal-page-container h1,
+    .content-page h1 {
+        font-size: var(--font-size-2xl);
+    }
+    
+    .legal-page-container h2 {
+        font-size: var(--font-size-xl);
+    }
+    
+    .legal-page-container h3 {
+        font-size: var(--font-size-lg);
+    }
+}
