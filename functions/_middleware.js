@@ -348,14 +348,11 @@ export async function onRequest({ request, next, env }) {
           TOKEN_SECRET
         );
         
-        return new Response(JSON.stringify({ 
-          success: true,
-          redirect: redirectPath || '/'
-        }), {
-          status: 200,
+        return new Response(null, { 
+          status: 302,
           headers: {
-            'Content-Type': 'application/json',
-            'Set-Cookie': `preview_token=${token}; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`
+            'Location': redirectPath || '/',
+            'Set-Cookie': `preview_token=${token}; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Lax`
           }
         });
       } else {
