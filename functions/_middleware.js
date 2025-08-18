@@ -33,6 +33,7 @@ export async function onRequest({ request, next, env }) {
       "base-uri 'self'",
       "form-action 'self' https://manage.kmail-lists.com",
       "manifest-src 'self'",
+      "require-sri-for script style",
       "worker-src 'none'",
       "object-src 'none'",
       "media-src 'self'",
