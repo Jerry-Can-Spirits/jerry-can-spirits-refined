@@ -137,84 +137,8 @@ const currentYear = new Date().getFullYear();
       !function(){if(!window.klaviyo){window._klOnsite=window._klOnsite||[];try{window.klaviyo=new Proxy({},{get:function(n,i){return"push"===i?function(){var n;(n=window._klOnsite).push.apply(n,arguments)}:function(){for(var n=arguments.length,o=new Array(n),w=0;w<n;w++)o[w]=arguments[w];var t="function"==typeof o[o.length-1]?o.pop():void 0,e=new Promise((function(n){window._klOnsite.push([i].concat(o,[function(i){t&&t(i),n(i)}]))}));return e}}})}catch(n){window.klaviyo=window.klaviyo||[],window.klaviyo.push=function(){var n;(n=window._klOnsite).push.apply(n,arguments)}}}}(); 
     </script>
     
-    <!-- Dark Mode Theme Script -->
-    <script is:inline>
-      // Theme toggle functionality
-      function toggleTheme() {
-        const html = document.documentElement;
-        const currentTheme = html.getAttribute('data-theme');
-        const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-        
-        html.setAttribute('data-theme', newTheme);
-        localStorage.setItem('theme', newTheme);
-        updateThemeIcon(newTheme);
-        
-        // Dispatch event for other components to react to theme change
-        window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: newTheme } }));
-      }
-      
-      function updateThemeIcon(theme) {
-        const sunIcon = document.querySelector('.sun-icon');
-        const moonIcon = document.querySelector('.moon-icon');
-        
-        if (sunIcon && moonIcon) {
-          if (theme === 'dark') {
-            sunIcon.style.display = 'block';
-            moonIcon.style.display = 'none';
-          } else {
-            sunIcon.style.display = 'none';
-            moonIcon.style.display = 'block';
-          }
-        }
-      }
-      
-      // Initialize theme on load
-      (function() {
-        const savedTheme = localStorage.getItem('theme');
-        const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-        const theme = savedTheme || (prefersDark ? 'dark' : 'light');
-        
-        if (savedTheme) {
-          document.documentElement.setAttribute('data-theme', theme);
-        }
-        updateThemeIcon(theme);
-      })();
-      
-      // Listen for system theme changes
-      window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', (e) => {
-        if (!localStorage.getItem('theme')) {
-          const newTheme = e.matches ? 'dark' : 'light';
-          updateThemeIcon(newTheme);
-          window.dispatchEvent(new CustomEvent('themechange', { detail: { theme: newTheme } }));
-        }
-      });
-    </script>
-    
-    <!-- Performance monitoring (optional) -->
-    <script is:inline>
-      // Log Web Vitals for performance monitoring
-      if ('PerformanceObserver' in window) {
-        try {
-          // Create observer for Largest Contentful Paint
-          const lcpObserver = new PerformanceObserver((list) => {
-            const entries = list.getEntries();
-            const lastEntry = entries[entries.length - 1];
-            console.log('LCP:', lastEntry.renderTime || lastEntry.loadTime);
-          });
-          lcpObserver.observe({ type: 'largest-contentful-paint', buffered: true });
-          
-          // Log First Input Delay
-          const fidObserver = new PerformanceObserver((list) => {
-            const entries = list.getEntries();
-            entries.forEach((entry) => {
-              console.log('FID:', entry.processingStart - entry.startTime);
-            });
-          });
-          fidObserver.observe({ type: 'first-input', buffered: true });
-        } catch (e) {
-          // Silently fail if not supported
-        }
-      }
-    </script>
+    <!-- External Scripts -->
+    <script src="/js/theme-toggle.js"></script>
+    <script src="/js/performance-monitor.js"></script>
   </body>
 </html>

@@ -330,102 +330,102 @@
   
   <script>
     // Get URL parameters
-    const urlParams = new URLSearchParams(window.location.search);
-    const redirectPath = urlParams.get('redirect');
-    const error = urlParams.get('error');
+const urlParams = new URLSearchParams(window.location.search);
+const redirectPath = urlParams.get('redirect');
+const error = urlParams.get('error');
+
+// Show error if present
+if (error === 'invalid') {
+  document.getElementById('errorMessage').classList.add('show');
+}
+
+// Handle form submission
+const form = document.getElementById('authForm');
+const submitBtn = document.getElementById('submitBtn');
+const btnText = document.getElementById('btnText');
+const loadingSpinner = document.getElementById('loadingSpinner');
+const errorMessage = document.getElementById('errorMessage');
+const successMessage = document.getElementById('successMessage');
+
+form.addEventListener('submit', async function(e) {
+  e.preventDefault();
+  
+  // Clear previous messages
+  errorMessage.classList.remove('show');
+  successMessage.classList.remove('show');
+  
+  // Show loading state
+  submitBtn.disabled = true;
+  btnText.textContent = 'Authenticating';
+  loadingSpinner.style.display = 'inline-block';
+  
+  // Submit form
+  try {
+    const formData = new FormData(form);
     
-    // Show error if present
-    if (error === 'invalid') {
-      document.getElementById('errorMessage').classList.add('show');
+    // Add redirect path if present
+    if (redirectPath) {
+      formData.append('redirect', redirectPath);
     }
     
-    // Handle form submission
-    const form = document.getElementById('authForm');
-    const submitBtn = document.getElementById('submitBtn');
-    const btnText = document.getElementById('btnText');
-    const loadingSpinner = document.getElementById('loadingSpinner');
-    const errorMessage = document.getElementById('errorMessage');
-    const successMessage = document.getElementById('successMessage');
+    const response = await fetch('/api/auth', {
+      method: 'POST',
+      body: formData
+    });
     
-    form.addEventListener('submit', async function(e) {
-      e.preventDefault();
+    const data = await response.json();
+    
+    if (response.ok) {
+      // Success
+      successMessage.textContent = 'Authentication successful! Redirecting...';
+      successMessage.classList.add('show');
+      btnText.textContent = 'Success';
+      loadingSpinner.style.display = 'none';
       
-      // Clear previous messages
-      errorMessage.classList.remove('show');
-      successMessage.classList.remove('show');
-      
-      // Show loading state
-      submitBtn.disabled = true;
-      btnText.textContent = 'Authenticating';
-      loadingSpinner.style.display = 'inline-block';
-      
-      // Submit form
-      try {
-        const formData = new FormData(form);
-        
-        // Add redirect path if present
-        if (redirectPath) {
-          formData.append('redirect', redirectPath);
+      // Redirect after a brief delay
+      setTimeout(() => {
+        window.location.href = data.redirect || redirectPath || '/';
+      }, 1000);
+    } else {
+      // Handle different error types
+      if (response.status === 429) {
+        errorMessage.textContent = data.error || 'Too many attempts. Please try again later.';
+      } else if (response.status === 403) {
+        errorMessage.textContent = data.error || 'Access denied. This email is not authorized.';
+      } else {
+        errorMessage.textContent = data.error || 'Invalid credentials. Please try again.';
+        if (data.attemptsRemaining !== undefined) {
+          errorMessage.textContent += ` (${data.attemptsRemaining} attempts remaining)`;
         }
-        
-        const response = await fetch('/api/auth', {
-          method: 'POST',
-          body: formData
-        });
-        
-        const data = await response.json();
-        
-        if (response.ok) {
-          // Success
-          successMessage.textContent = 'Authentication successful! Redirecting...';
-          successMessage.classList.add('show');
-          btnText.textContent = 'Success';
-          loadingSpinner.style.display = 'none';
-          
-          // Redirect after a brief delay
-          setTimeout(() => {
-            window.location.href = data.redirect || redirectPath || '/';
-          }, 1000);
-        } else {
-          // Handle different error types
-          if (response.status === 429) {
-            errorMessage.textContent = data.error || 'Too many attempts. Please try again later.';
-          } else if (response.status === 403) {
-            errorMessage.textContent = data.error || 'Access denied. This email is not authorized.';
-          } else {
-            errorMessage.textContent = data.error || 'Invalid credentials. Please try again.';
-            if (data.attemptsRemaining !== undefined) {
-              errorMessage.textContent += ` (${data.attemptsRemaining} attempts remaining)`;
-            }
-          }
-          
-          errorMessage.classList.add('show');
-          submitBtn.disabled = false;
-          btnText.textContent = 'Authenticate';
-          loadingSpinner.style.display = 'none';
-          
-          // Clear password field
-          document.getElementById('password').value = '';
-          document.getElementById('password').focus();
-        }
-      } catch (err) {
-        // Network or parsing error
-        errorMessage.textContent = 'Connection error. Please check your internet and try again.';
-        errorMessage.classList.add('show');
-        submitBtn.disabled = false;
-        btnText.textContent = 'Authenticate';
-        loadingSpinner.style.display = 'none';
-        
-        // Clear password field
-        document.getElementById('password').value = '';
-        document.getElementById('password').focus();
       }
-    });
-    
-    // Auto-focus password field
-    window.addEventListener('load', () => {
+      
+      errorMessage.classList.add('show');
+      submitBtn.disabled = false;
+      btnText.textContent = 'Authenticate';
+      loadingSpinner.style.display = 'none';
+      
+      // Clear password field
+      document.getElementById('password').value = '';
       document.getElementById('password').focus();
-    });
+    }
+  } catch (err) {
+    // Network or parsing error
+    errorMessage.textContent = 'Connection error. Please check your internet and try again.';
+    errorMessage.classList.add('show');
+    submitBtn.disabled = false;
+    btnText.textContent = 'Authenticate';
+    loadingSpinner.style.display = 'none';
+    
+    // Clear password field
+    document.getElementById('password').value = '';
+    document.getElementById('password').focus();
+  }
+});
+
+// Auto-focus password field
+window.addEventListener('load', () => {
+  document.getElementById('password').focus();
+});
   </script>
 </body>
 </html>

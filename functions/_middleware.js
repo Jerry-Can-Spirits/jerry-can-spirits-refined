@@ -17,6 +17,34 @@ export async function onRequest({ request, next, env }) {
   
   // --- HELPER FUNCTIONS ---
   
+  // Add security headers function
+  function addSecurityHeaders(response) {
+    const newResponse = new Response(response.body, response);
+    
+    // Content Security Policy - strict but functional
+    const csp = [
+      "default-src 'self'",
+      "script-src 'self' https://static.klaviyo.com https://cdnjs.cloudflare.com",
+      "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
+      "font-src 'self' https://fonts.gstatic.com",
+      "img-src 'self' data: https:",
+      "connect-src 'self'",
+      "frame-ancestors 'none'",
+      "base-uri 'self'",
+      "form-action 'self'"
+    ].join('; ');
+    
+    newResponse.headers.set('Content-Security-Policy', csp);
+    
+    // Additional security headers
+    newResponse.headers.set('X-Frame-Options', 'DENY');
+    newResponse.headers.set('X-Content-Type-Options', 'nosniff');
+    newResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+    newResponse.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    
+    return newResponse;
+  }
+  
   // Get client IP
   function getClientIP(request) {
     return request.headers.get('CF-Connecting-IP') || 
@@ -87,43 +115,35 @@ export async function onRequest({ request, next, env }) {
     }
   }
   
-  // Rate limiting using KV store
+  // Rate limiting functions
   async function checkRateLimit(env, ip) {
-    if (!env.RATE_LIMITS) return { allowed: true, remaining: MAX_ATTEMPTS };
+    if (!env.RATE_LIMITS) return { allowed: true, remaining: MAX_ATTEMPTS, resetIn: 0 };
     
     const key = `ratelimit:${ip}`;
     const data = await env.RATE_LIMITS.get(key);
     
     if (!data) {
-      return { allowed: true, remaining: MAX_ATTEMPTS };
+      return { allowed: true, remaining: MAX_ATTEMPTS, resetIn: 0 };
     }
     
-    const { attempts, firstAttempt } = JSON.parse(data);
+    const { count, firstAttempt } = JSON.parse(data);
     const now = Date.now();
+    const timeElapsed = now - firstAttempt;
     
-    // Reset if outside window
-    if (now - firstAttempt > RATE_LIMIT_WINDOW) {
+    if (timeElapsed > RATE_LIMIT_WINDOW) {
+      // Window expired, reset
       await env.RATE_LIMITS.delete(key);
-      return { allowed: true, remaining: MAX_ATTEMPTS };
+      return { allowed: true, remaining: MAX_ATTEMPTS, resetIn: 0 };
     }
     
-    // Check if exceeded
-    if (attempts >= MAX_ATTEMPTS) {
-      const resetIn = Math.ceil((firstAttempt + RATE_LIMIT_WINDOW - now) / 1000 / 60);
-      return { 
-        allowed: false, 
-        remaining: 0,
-        resetIn: resetIn
-      };
+    if (count >= MAX_ATTEMPTS) {
+      const resetIn = Math.ceil((RATE_LIMIT_WINDOW - timeElapsed) / 60000);
+      return { allowed: false, remaining: 0, resetIn };
     }
     
-    return { 
-      allowed: true, 
-      remaining: MAX_ATTEMPTS - attempts 
-    };
+    return { allowed: true, remaining: MAX_ATTEMPTS - count, resetIn: 0 };
   }
   
-  // Increment rate limit counter
   async function incrementRateLimit(env, ip) {
     if (!env.RATE_LIMITS) return;
     
@@ -133,27 +153,27 @@ export async function onRequest({ request, next, env }) {
     
     if (!data) {
       await env.RATE_LIMITS.put(key, JSON.stringify({
-        attempts: 1,
+        count: 1,
         firstAttempt: now
-      }), {
-        expirationTtl: Math.ceil(RATE_LIMIT_WINDOW / 1000)
-      });
+      }), { expirationTtl: Math.ceil(RATE_LIMIT_WINDOW / 1000) });
     } else {
-      const parsed = JSON.parse(data);
-      parsed.attempts++;
-      await env.RATE_LIMITS.put(key, JSON.stringify(parsed), {
-        expirationTtl: Math.ceil(RATE_LIMIT_WINDOW / 1000)
-      });
+      const { count, firstAttempt } = JSON.parse(data);
+      await env.RATE_LIMITS.put(key, JSON.stringify({
+        count: count + 1,
+        firstAttempt
+      }), { expirationTtl: Math.ceil(RATE_LIMIT_WINDOW / 1000) });
     }
   }
   
-  // Generate a secure token
-  async function generateToken(data, secret) {
-    const payload = JSON.stringify({ 
-      ...data, 
-      exp: Date.now() + (7 * 24 * 60 * 60 * 1000),
-      iat: Date.now()
-    });
+  // Token generation and verification
+  async function generateToken(payload, secret) {
+    const header = { alg: 'HS256', typ: 'JWT' };
+    const now = Date.now();
+    const tokenPayload = {
+      ...payload,
+      iat: now,
+      exp: now + (7 * 24 * 60 * 60 * 1000) // 7 days
+    };
     
     const encoder = new TextEncoder();
     const key = await crypto.subtle.importKey(
@@ -164,14 +184,14 @@ export async function onRequest({ request, next, env }) {
       ['sign']
     );
     
-    const signature = await crypto.subtle.sign(
-      'HMAC',
-      key,
-      encoder.encode(payload)
-    );
+    const headerB64 = btoa(JSON.stringify(header));
+    const payloadB64 = btoa(JSON.stringify(tokenPayload));
+    const data = `${headerB64}.${payloadB64}`;
     
-    const token = btoa(payload) + '.' + btoa(String.fromCharCode(...new Uint8Array(signature)));
-    return token;
+    const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
+    const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
+    
+    return `${payloadB64}.${signatureB64}`;
   }
   
   // Verify a token
@@ -230,7 +250,8 @@ export async function onRequest({ request, next, env }) {
   if (ALLOWED_IPS.length > 0 && ALLOWED_IPS.includes(clientIP)) {
     // Trusted IP, bypass authentication
     await logAccess(env, 'trusted_ip_access', { ip: clientIP });
-    return next();
+    const response = await next();
+    return addSecurityHeaders(response);
   }
   
   // --- STATIC ASSET CHECKS ---
@@ -241,7 +262,8 @@ export async function onRequest({ request, next, env }) {
   const isAuthPage = url.pathname === '/auth' || url.pathname === '/auth.html';
   
   if (isAstroAsset || isStaticAsset || isSplashPage || isAuthPage) {
-    return next();
+    const response = await next();
+    return addSecurityHeaders(response);
   }
   
   // --- CHECK EXISTING AUTHENTICATION ---
@@ -252,7 +274,8 @@ export async function onRequest({ request, next, env }) {
     const tokenData = await verifyToken(authToken, TOKEN_SECRET);
     if (tokenData && tokenData.authenticated) {
       // Valid token, allow access
-      return next();
+      const response = await next();
+      return addSecurityHeaders(response);
     }
   }
   
@@ -283,7 +306,7 @@ export async function onRequest({ request, next, env }) {
       `preview_token=${token}; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`
     );
     
-    return modifiedResponse;
+    return addSecurityHeaders(modifiedResponse);
   }
   
   // --- HANDLE AUTHENTICATION FORM SUBMISSION ---
