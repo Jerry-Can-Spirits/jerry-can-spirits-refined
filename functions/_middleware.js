@@ -443,7 +443,7 @@ export async function onRequest({ request, next, env }) {
     }
   }
   
-  // --- REDIRECT TO SPLASH PAGE (NOT AUTH PAGE) --- 
+  // --- REDIRECT TO SPLASH PAGE --- 
   // This is the KEY FIX - redirect to splash, not auth
   if (url.pathname !== '/splash' && url.pathname !== '/splash.html') {
     return new Response(null, {
