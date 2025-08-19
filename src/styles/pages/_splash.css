@@ -1,0 +1,226 @@
+/* ============================================
+   SPLASH PAGE STYLES
+   For: public/splash.html
+   ============================================ */
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+:root {
+    --deep-green: #2A2F1D;
+    --parchment: #F5F1E6;
+    --dark-olive: #3D4034;
+    --accent-gold: #B8860B;
+    --font-family-body: 'Roboto', sans-serif;
+    --font-family-heading: 'Oswald', sans-serif;
+}
+
+body {
+    font-family: var(--font-family-body);
+    background: linear-gradient(135deg, #1a1f12 0%, var(--deep-green) 50%, var(--dark-olive) 100%);
+    color: var(--parchment);
+    min-height: 100vh;
+    position: relative;
+    overflow-x: hidden;
+}
+
+/* Animated background pattern */
+body::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: 
+        repeating-linear-gradient(
+            45deg,
+            transparent,
+            transparent 35px,
+            rgba(255,255,255,0.02) 35px,
+            rgba(255,255,255,0.02) 70px
+        );
+    pointer-events: none;
+    animation: drift 20s linear infinite;
+}
+
+@keyframes drift {
+    0% { transform: translate(0, 0); }
+    100% { transform: translate(70px, 70px); }
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 2rem;
+    position: relative;
+    z-index: 1;
+}
+
+.content-wrapper {
+    text-align: center;
+    max-width: 600px;
+    animation: fadeInUp 1s ease-out;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.logo {
+    width: 120px;
+    height: 120px;
+    margin-bottom: 2.5rem;
+    filter: drop-shadow(0 10px 30px rgba(0,0,0,0.3));
+    animation: float 3s ease-in-out infinite;
+}
+
+@keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+}
+
+h1 {
+    font-family: var(--font-family-heading);
+    font-size: clamp(3rem, 8vw, 5rem);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.15em;
+    margin-bottom: 0.5rem;
+    background: linear-gradient(135deg, var(--parchment) 0%, var(--accent-gold) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    position: relative;
+}
+
+.tagline {
+    font-size: 1.1rem;
+    font-weight: 300;
+    letter-spacing: 0.05em;
+    opacity: 0.8;
+    margin-bottom: 2rem;
+    text-transform: uppercase;
+}
+
+.description {
+    font-size: 1.125rem;
+    line-height: 1.7;
+    margin-bottom: 3rem;
+    opacity: 0.9;
+    font-weight: 300;
+}
+
+/* Email signup form */
+.signup-form {
+    display: flex;
+    gap: 0.5rem;
+    max-width: 400px;
+    margin: 0 auto 2rem;
+}
+
+.email-input {
+    flex: 1;
+    padding: 0.875rem 1.25rem;
+    background: rgba(245, 241, 230, 0.1);
+    border: 1px solid rgba(245, 241, 230, 0.2);
+    border-radius: 50px;
+    color: var(--parchment);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.email-input::placeholder {
+    color: rgba(245, 241, 230, 0.5);
+}
+
+.email-input:focus {
+    outline: none;
+    background: rgba(245, 241, 230, 0.15);
+    border-color: var(--accent-gold);
+}
+
+.submit-btn {
+    padding: 0.875rem 2rem;
+    background: linear-gradient(135deg, var(--accent-gold) 0%, #8B6914 100%);
+    border: none;
+    border-radius: 50px;
+    color: var(--deep-green);
+    font-weight: 600;
+    font-size: 1rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.submit-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 10px 25px rgba(184, 134, 11, 0.3);
+}
+
+/* Social links */
+.social-links {
+    display: flex;
+    gap: 2rem;
+    justify-content: center;
+    margin-top: 2rem;
+}
+
+.social-links a {
+    color: var(--parchment);
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    font-size: 1.5rem;
+}
+
+.social-links a:hover {
+    opacity: 1;
+    transform: translateY(-3px);
+}
+
+/* Team access link */
+.team-access {
+    position: absolute;
+    bottom: 2rem;
+    right: 2rem;
+    opacity: 0.3;
+    transition: opacity 0.3s ease;
+}
+
+.team-access a {
+    color: var(--parchment);
+    text-decoration: none;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.team-access:hover {
+    opacity: 0.7;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 480px) {
+    .signup-form {
+        flex-direction: column;
+    }
+    
+    .submit-btn {
+        width: 100%;
+    }
+}

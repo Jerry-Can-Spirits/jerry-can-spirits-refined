@@ -1,4 +1,5 @@
 // functions/_middleware.js - Enhanced Version with Rate Limiting & Analytics
+// FIXED VERSION - Redirects to splash, not auth
 
 export async function onRequest({ request, next, env }) {
   const url = new URL(request.url);
@@ -48,6 +49,7 @@ export async function onRequest({ request, next, env }) {
     newResponse.headers.set('X-Content-Type-Options', 'nosniff');
     newResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
     newResponse.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+    newResponse.headers.set('Strict-Transport-Security', 'max-age=31536000; includeSubDomains; preload');
     
     return newResponse;
   }
@@ -74,8 +76,8 @@ export async function onRequest({ request, next, env }) {
     if (!WEBHOOK_URL) return;
     
     const color = type === 'error' ? 0xff0000 : 
-                  type === 'success' ? 0x00ff00 : 
-                  0x0080ff;
+                  type === 'success' ? 0x00ff00 :
+                  type === 'warning' ? 0xffaa00 : 0x0099ff;
     
     try {
       await fetch(WEBHOOK_URL, {
@@ -83,7 +85,7 @@ export async function onRequest({ request, next, env }) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           embeds: [{
-            title: 'Jerry Can Spirits - Preview Site',
+            title: 'Jerry Can Spirits - Auth Event',
             description: message,
             color: color,
             timestamp: new Date().toISOString()
@@ -91,96 +93,99 @@ export async function onRequest({ request, next, env }) {
         })
       });
     } catch (e) {
-      console.error('Webhook failed:', e);
+      console.error('Webhook error:', e);
     }
   }
   
-  // Log access attempt
-  async function logAccess(env, event, details) {
-    if (!ENABLE_ANALYTICS) return;
+  // Log access to KV store
+  async function logAccess(env, event, data) {
+    if (!ENABLE_ANALYTICS || !env.AUTH_LOGS) return;
     
-    const log = {
-      event,
-      ...details,
-      timestamp: Date.now()
-    };
-    
-    // Store in KV if available
-    if (env.ACCESS_LOGS) {
+    try {
       const key = `log:${Date.now()}:${Math.random()}`;
-      await env.ACCESS_LOGS.put(key, JSON.stringify(log), {
+      await env.AUTH_LOGS.put(key, JSON.stringify({
+        event,
+        ...data
+      }), {
         expirationTtl: 30 * 24 * 60 * 60 // 30 days
       });
-    }
-    
-    // Send critical events to webhook
-    if (event === 'auth_failed' || event === 'auth_success' || event === 'rate_limited') {
-      await sendWebhook(
-        `**${event}**\nIP: ${details.ip}\nEmail: ${details.email || 'N/A'}\nCountry: ${details.country}`,
-        event === 'auth_success' ? 'success' : 'error'
-      );
+      
+      // Send webhook notification for important events
+      if (event === 'auth_success' || event === 'auth_failed') {
+        await sendWebhook(
+          `${event === 'auth_success' ? '✅' : '❌'} ${event}\nEmail: ${data.email || 'unknown'}\nIP: ${data.ip}\nCountry: ${data.country}`,
+          event === 'auth_success' ? 'success' : 'error'
+        );
+      }
+    } catch (e) {
+      console.error('Logging error:', e);
     }
   }
   
   // Rate limiting functions
   async function checkRateLimit(env, ip) {
-    if (!env.RATE_LIMITS) return { allowed: true, remaining: MAX_ATTEMPTS, resetIn: 0 };
+    if (!env.RATE_LIMITS) return { allowed: true, remaining: MAX_ATTEMPTS };
     
-    const key = `ratelimit:${ip}`;
-    const data = await env.RATE_LIMITS.get(key);
-    
-    if (!data) {
-      return { allowed: true, remaining: MAX_ATTEMPTS, resetIn: 0 };
+    try {
+      const key = `ratelimit:${ip}`;
+      const data = await env.RATE_LIMITS.get(key);
+      
+      if (!data) {
+        return { allowed: true, remaining: MAX_ATTEMPTS };
+      }
+      
+      const parsed = JSON.parse(data);
+      const now = Date.now();
+      
+      if (now - parsed.firstAttempt > RATE_LIMIT_WINDOW) {
+        await env.RATE_LIMITS.delete(key);
+        return { allowed: true, remaining: MAX_ATTEMPTS };
+      }
+      
+      return {
+        allowed: parsed.attempts < MAX_ATTEMPTS,
+        remaining: MAX_ATTEMPTS - parsed.attempts,
+        resetIn: Math.ceil((RATE_LIMIT_WINDOW - (now - parsed.firstAttempt)) / 60000)
+      };
+    } catch (e) {
+      console.error('Rate limit check error:', e);
+      return { allowed: true, remaining: MAX_ATTEMPTS };
     }
-    
-    const { count, firstAttempt } = JSON.parse(data);
-    const now = Date.now();
-    const timeElapsed = now - firstAttempt;
-    
-    if (timeElapsed > RATE_LIMIT_WINDOW) {
-      // Window expired, reset
-      await env.RATE_LIMITS.delete(key);
-      return { allowed: true, remaining: MAX_ATTEMPTS, resetIn: 0 };
-    }
-    
-    if (count >= MAX_ATTEMPTS) {
-      const resetIn = Math.ceil((RATE_LIMIT_WINDOW - timeElapsed) / 60000);
-      return { allowed: false, remaining: 0, resetIn };
-    }
-    
-    return { allowed: true, remaining: MAX_ATTEMPTS - count, resetIn: 0 };
   }
   
   async function incrementRateLimit(env, ip) {
     if (!env.RATE_LIMITS) return;
     
-    const key = `ratelimit:${ip}`;
-    const data = await env.RATE_LIMITS.get(key);
-    const now = Date.now();
-    
-    if (!data) {
-      await env.RATE_LIMITS.put(key, JSON.stringify({
-        count: 1,
-        firstAttempt: now
-      }), { expirationTtl: Math.ceil(RATE_LIMIT_WINDOW / 1000) });
-    } else {
-      const { count, firstAttempt } = JSON.parse(data);
-      await env.RATE_LIMITS.put(key, JSON.stringify({
-        count: count + 1,
-        firstAttempt
-      }), { expirationTtl: Math.ceil(RATE_LIMIT_WINDOW / 1000) });
+    try {
+      const key = `ratelimit:${ip}`;
+      const existing = await env.RATE_LIMITS.get(key);
+      
+      const data = existing ? JSON.parse(existing) : {
+        firstAttempt: Date.now(),
+        attempts: 0
+      };
+      
+      data.attempts++;
+      
+      await env.RATE_LIMITS.put(key, JSON.stringify(data), {
+        expirationTtl: Math.ceil(RATE_LIMIT_WINDOW / 1000)
+      });
+    } catch (e) {
+      console.error('Rate limit increment error:', e);
     }
   }
   
-  // Token generation and verification
+  // Generate JWT-like token
   async function generateToken(payload, secret) {
     const header = { alg: 'HS256', typ: 'JWT' };
-    const now = Date.now();
+    const encodedHeader = btoa(JSON.stringify(header));
+    
     const tokenPayload = {
       ...payload,
-      iat: now,
-      exp: now + (7 * 24 * 60 * 60 * 1000) // 7 days
+      iat: Date.now(),
+      exp: Date.now() + (7 * 24 * 60 * 60 * 1000) // 7 days
     };
+    const encodedPayload = btoa(JSON.stringify(tokenPayload));
     
     const encoder = new TextEncoder();
     const key = await crypto.subtle.importKey(
@@ -191,20 +196,19 @@ export async function onRequest({ request, next, env }) {
       ['sign']
     );
     
-    const headerB64 = btoa(JSON.stringify(header));
-    const payloadB64 = btoa(JSON.stringify(tokenPayload));
-    const data = `${headerB64}.${payloadB64}`;
+    const signature = await crypto.subtle.sign(
+      'HMAC',
+      key,
+      encoder.encode(`${encodedHeader}.${encodedPayload}`)
+    );
     
-    const signature = await crypto.subtle.sign('HMAC', key, encoder.encode(data));
-    const signatureB64 = btoa(String.fromCharCode(...new Uint8Array(signature)));
+    const encodedSignature = btoa(String.fromCharCode(...new Uint8Array(signature)));
     
-    return `${payloadB64}.${signatureB64}`;
+    return `${encodedPayload}.${encodedSignature}`;
   }
   
-  // Verify a token
+  // Verify token
   async function verifyToken(token, secret) {
-    if (!token) return false;
-    
     try {
       const [payloadB64, signatureB64] = token.split('.');
       if (!payloadB64 || !signatureB64) return false;
@@ -252,8 +256,10 @@ export async function onRequest({ request, next, env }) {
     return cookies;
   }
   
-  // --- IP ALLOWLIST CHECK ---
+  // --- MAIN LOGIC STARTS HERE ---
   const clientIP = getClientIP(request);
+  
+  // --- IP ALLOWLIST CHECK ---
   if (ALLOWED_IPS.length > 0 && ALLOWED_IPS.includes(clientIP)) {
     // Trusted IP, bypass authentication
     await logAccess(env, 'trusted_ip_access', { ip: clientIP });
@@ -267,8 +273,11 @@ export async function onRequest({ request, next, env }) {
   const isStaticAsset = staticExtensions.test(url.pathname);
   const isSplashPage = url.pathname === '/splash' || url.pathname === '/splash.html';
   const isAuthPage = url.pathname === '/auth' || url.pathname === '/auth.html';
+  const isPublicAsset = url.pathname.startsWith('/favicon') || 
+                        url.pathname.startsWith('/logo') ||
+                        url.pathname.startsWith('/src/styles');
   
-  if (isAstroAsset || isStaticAsset || isSplashPage || isAuthPage) {
+  if (isAstroAsset || isStaticAsset || isSplashPage || isAuthPage || isPublicAsset) {
     const response = await next();
     return addSecurityHeaders(response);
   }
@@ -277,8 +286,13 @@ export async function onRequest({ request, next, env }) {
   const cookies = parseCookies(request.headers.get('Cookie') || '');
   const authToken = cookies.preview_token;
   
+  console.log('[DEBUG] Path:', url.pathname);
+  console.log('[DEBUG] Has token:', !!authToken);
+  
   if (authToken) {
     const tokenData = await verifyToken(authToken, TOKEN_SECRET);
+    console.log('[DEBUG] Token valid:', !!(tokenData && tokenData.authenticated));
+    
     if (tokenData && tokenData.authenticated) {
       // Valid token, allow access
       const response = await next();
@@ -290,30 +304,40 @@ export async function onRequest({ request, next, env }) {
   const password = url.searchParams.get('preview');
   const email = url.searchParams.get('email');
   
-  if (password === AUTH_SECRET) {
-    const clientInfo = getClientInfo(request);
-    await logAccess(env, 'auth_success', { ...clientInfo, email: email || 'direct-link' });
+  if (password) {
+    console.log('[DEBUG] Password provided, checking...');
     
-    const token = await generateToken(
-      { 
-        authenticated: true, 
-        email: email || 'direct-link',
-        ip: clientIP
-      }, 
-      TOKEN_SECRET
-    );
-    
-    url.searchParams.delete('preview');
-    url.searchParams.delete('email');
-    
-    const response = await fetch(new URL(url.pathname + url.search, url.origin));
-    const modifiedResponse = new Response(response.body, response);
-    
-    modifiedResponse.headers.append('Set-Cookie', 
-      `preview_token=${token}; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Strict`
-    );
-    
-    return addSecurityHeaders(modifiedResponse);
+    if (password === AUTH_SECRET) {
+      console.log('[DEBUG] Password correct!');
+      const clientInfo = getClientInfo(request);
+      await logAccess(env, 'auth_success', { ...clientInfo, email: email || 'direct-link' });
+      
+      const token = await generateToken(
+        { 
+          authenticated: true, 
+          email: email || 'direct-link',
+          ip: clientIP
+        }, 
+        TOKEN_SECRET
+      );
+      
+      // Remove password from URL and redirect with cookie
+      url.searchParams.delete('preview');
+      url.searchParams.delete('email');
+      
+      const cleanUrl = url.pathname + (url.search || '');
+      const response = new Response(null, {
+        status: 302,
+        headers: {
+          'Location': cleanUrl,
+          'Set-Cookie': `preview_token=${token}; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Lax`
+        }
+      });
+      
+      return response;
+    } else {
+      console.log('[DEBUG] Password incorrect');
+    }
   }
   
   // --- HANDLE AUTHENTICATION FORM SUBMISSION ---
@@ -379,16 +403,18 @@ export async function onRequest({ request, next, env }) {
         );
 
         const response = new Response(JSON.stringify({
-            success: true,
-            redirect: redirectPath || '/'
+          success: true,
+          redirect: redirectPath || '/'
         }), {
-            status: 200,
-            headers: { 'Content-Type': 'application/json' }
+          status: 200,
+          headers: { 'Content-Type': 'application/json' }
         });
 
-response.headers.append('Set-Cookie', `preview_token=${token}; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Lax`);
+        response.headers.append('Set-Cookie', 
+          `preview_token=${token}; Path=/; Max-Age=604800; HttpOnly; Secure; SameSite=Lax`
+        );
 
-return response;
+        return response;
         
       } else {
         // Invalid password
@@ -417,13 +443,19 @@ return response;
     }
   }
   
-  // --- REDIRECT TO AUTH PAGE ---
-  const attemptedPath = url.pathname !== '/' ? url.pathname : '';
-  return new Response(null, {
-    status: 302,
-    headers: {
-      'Location': `/auth.html${attemptedPath ? '?redirect=' + encodeURIComponent(attemptedPath) : ''}`,
-      'Cache-Control': 'no-cache, no-store, must-revalidate'
-    }
-  });
+  // --- REDIRECT TO SPLASH PAGE (NOT AUTH PAGE) --- 
+  // This is the KEY FIX - redirect to splash, not auth
+  if (url.pathname !== '/splash' && url.pathname !== '/splash.html') {
+    return new Response(null, {
+      status: 302,
+      headers: {
+        'Location': '/splash.html',
+        'Cache-Control': 'no-cache, no-store, must-revalidate'
+      }
+    });
+  }
+  
+  // If we're somehow still here, serve the request
+  const response = await next();
+  return addSecurityHeaders(response);
 }
