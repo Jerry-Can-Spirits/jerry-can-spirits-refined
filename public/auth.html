@@ -1,121 +1,134 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <link rel="stylesheet" href="/css/static-styles.css">
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Jerry Can Spirits - Team Access</title>
-  
-  <!-- Security headers via meta tags -->
+  <title>Jerry Can Spirits – Team Access</title>
+
+  <!-- Security headers -->
   <meta http-equiv="X-Frame-Options" content="DENY">
   <meta http-equiv="X-Content-Type-Options" content="nosniff">
-  
+
   <!-- Favicon -->
   <link rel="icon" type="image/png" href="/favicon.png">
-  
+
   <!-- Fonts -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@400;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
-    
+
+  <!-- Static styles for splash/auth -->
+  <link rel="stylesheet" href="/css/static-styles.css">
+</head>
+<body>
+  <div class="auth-container">
+    <img src="/logo.png" alt="Jerry Can Spirits Logo" class="logo">
+    <h1>Team Access</h1>
+    <p class="subtitle">Sign in with your credentials</p>
+
+    <form id="authForm" class="auth-form">
+      <div class="form-group">
+        <label for="email">Email</label>
+        <input id="email" type="email" name="email" placeholder="team@example.com" required>
+      </div>
+      <div class="form-group">
+        <label for="password">Password</label>
+        <input id="password" type="password" name="password" placeholder="••••••••" required>
+      </div>
+      <button type="submit" id="submitBtn" class="submit-btn">
+        <span id="btnText">Authenticate</span>
+        <span id="loadingSpinner" class="loading" style="display:none;"></span>
+      </button>
+    </form>
+
+    <div id="errorMessage" class="error-message"></div>
+    <div id="successMessage" class="success-message"></div>
+
+    <p class="info-message">
+      Having trouble? Contact the site administrator.
+    </p>
+    <a href="/splash.html" class="back-link">← Back to Splash</a>
+  </div>
+
   <script>
-    // Get URL parameters
-const urlParams = new URLSearchParams(window.location.search);
-const redirectPath = urlParams.get('redirect');
-const error = urlParams.get('error');
+    // --- Authentication Script ---
+    const urlParams = new URLSearchParams(window.location.search);
+    const redirectPath = urlParams.get('redirect');
+    const error = urlParams.get('error');
 
-// Show error if present
-if (error === 'invalid') {
-  document.getElementById('errorMessage').classList.add('show');
-}
+    const form = document.getElementById('authForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const btnText = document.getElementById('btnText');
+    const loadingSpinner = document.getElementById('loadingSpinner');
+    const errorMessage = document.getElementById('errorMessage');
+    const successMessage = document.getElementById('successMessage');
 
-// Handle form submission
-const form = document.getElementById('authForm');
-const submitBtn = document.getElementById('submitBtn');
-const btnText = document.getElementById('btnText');
-const loadingSpinner = document.getElementById('loadingSpinner');
-const errorMessage = document.getElementById('errorMessage');
-const successMessage = document.getElementById('successMessage');
-
-form.addEventListener('submit', async function(e) {
-  e.preventDefault();
-  
-  // Clear previous messages
-  errorMessage.classList.remove('show');
-  successMessage.classList.remove('show');
-  
-  // Show loading state
-  submitBtn.disabled = true;
-  btnText.textContent = 'Authenticating';
-  loadingSpinner.style.display = 'inline-block';
-  
-  // Submit form
-  try {
-    const formData = new FormData(form);
-    
-    // Add redirect path if present
-    if (redirectPath) {
-      formData.append('redirect', redirectPath);
-    }
-    
-    const response = await fetch('/api/auth', {
-      method: 'POST',
-      body: formData
-    });
-    
-    const data = await response.json();
-    
-    if (response.ok) {
-      // Success
-      successMessage.textContent = 'Authentication successful! Redirecting...';
-      successMessage.classList.add('show');
-      btnText.textContent = 'Success';
-      loadingSpinner.style.display = 'none';
-      
-      // Redirect after a brief delay
-      setTimeout(() => {
-        window.location.href = data.redirect || redirectPath || '/';
-      }, 1000);
-    } else {
-      // Handle different error types
-      if (response.status === 429) {
-        errorMessage.textContent = data.error || 'Too many attempts. Please try again later.';
-      } else if (response.status === 403) {
-        errorMessage.textContent = data.error || 'Access denied. This email is not authorized.';
-      } else {
-        errorMessage.textContent = data.error || 'Invalid credentials. Please try again.';
-        if (data.attemptsRemaining !== undefined) {
-          errorMessage.textContent += ` (${data.attemptsRemaining} attempts remaining)`;
-        }
-      }
-      
+    if (error === 'invalid') {
+      errorMessage.textContent = 'Invalid login attempt.';
       errorMessage.classList.add('show');
-      submitBtn.disabled = false;
-      btnText.textContent = 'Authenticate';
-      loadingSpinner.style.display = 'none';
-      
-      // Clear password field
-      document.getElementById('password').value = '';
-      document.getElementById('password').focus();
     }
-  } catch (err) {
-    // Network or parsing error
-    errorMessage.textContent = 'Connection error. Please check your internet and try again.';
-    errorMessage.classList.add('show');
-    submitBtn.disabled = false;
-    btnText.textContent = 'Authenticate';
-    loadingSpinner.style.display = 'none';
-    
-    // Clear password field
-    document.getElementById('password').value = '';
-    document.getElementById('password').focus();
-  }
-});
 
-// Auto-focus password field
-window.addEventListener('load', () => {
-  document.getElementById('password').focus();
-});
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+
+      // Reset messages
+      errorMessage.classList.remove('show');
+      successMessage.classList.remove('show');
+
+      // Show loading
+      submitBtn.disabled = true;
+      btnText.textContent = 'Authenticating';
+      loadingSpinner.style.display = 'inline-block';
+
+      try {
+        const formData = new FormData(form);
+        if (redirectPath) formData.append('redirect', redirectPath);
+
+        const response = await fetch('/api/auth', {
+          method: 'POST',
+          body: formData
+        });
+        const data = await response.json();
+
+        if (response.ok) {
+          successMessage.textContent = 'Authentication successful! Redirecting...';
+          successMessage.classList.add('show');
+          btnText.textContent = 'Success';
+          loadingSpinner.style.display = 'none';
+
+          setTimeout(() => {
+            window.location.href = data.redirect || redirectPath || '/';
+          }, 1000);
+        } else {
+          errorMessage.textContent =
+            data.error ||
+            (response.status === 429
+              ? 'Too many attempts. Try again later.'
+              : response.status === 403
+              ? 'Access denied. This email is not authorized.'
+              : 'Invalid credentials. Please try again.');
+          errorMessage.classList.add('show');
+
+          submitBtn.disabled = false;
+          btnText.textContent = 'Authenticate';
+          loadingSpinner.style.display = 'none';
+          document.getElementById('password').value = '';
+          document.getElementById('password').focus();
+        }
+      } catch (err) {
+        errorMessage.textContent = 'Connection error. Please try again.';
+        errorMessage.classList.add('show');
+        submitBtn.disabled = false;
+        btnText.textContent = 'Authenticate';
+        loadingSpinner.style.display = 'none';
+        document.getElementById('password').value = '';
+        document.getElementById('password').focus();
+      }
+    });
+
+    window.addEventListener('load', () => {
+      document.getElementById('password').focus();
+    });
   </script>
 </body>
 </html>
